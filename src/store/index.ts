@@ -1,11 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
-// import calendarSlice from 'store/slices/calendarSlice.ts';
+import serviceLogsSlice from 'store/slices/serviceLogsSlice.ts';
 
 export const store = configureStore({
-    devTools: true,
-    reducer: {
-        // calendar: calendarSlice,
-    },
+  devTools: true,
+  reducer: {
+    serviceLogs: serviceLogsSlice,
+  },
 });
 
 export type AppDispatch = typeof store.dispatch;
