@@ -1,15 +1,16 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { CircularProgress, IconButton, Paper } from '@mui/material';
+import { CircularProgress, IconButton, Paper, Typography } from '@mui/material';
 import { useAppDispatch, useAppSelector } from 'hooks/redux-hooks.ts';
 import { useEffect } from 'react';
 import { deleteLog, fetchServiceLogs } from 'store/slices/serviceLogsSlice.ts';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { getServiceTypeColor } from 'helpers/getServiceTypeColor.ts';
+import { capitalize } from 'helpers/stringHelpers.ts';
 
 export const ServiceLogsTable = () => {
   const dispatch = useAppDispatch();
 
   const { logs, isLoading, error } = useAppSelector(state => state.serviceLogs);
-  console.log('logs', logs);
 
   useEffect(() => {
     dispatch(fetchServiceLogs());
@@ -28,6 +29,12 @@ export const ServiceLogsTable = () => {
 
   const headers = logs.length ? Object.keys(logs[0]).map(item => item) : [];
 
+  const backgroundMap: Record<string, string> = {
+    green: 'rgba(33, 173, 54, 0.2)',
+    red: 'rgba(239, 83, 80, 0.2)',
+    orange: 'rgba(255, 165, 0, 0.2)',
+  };
+
   const columns: GridColDef[] = headers.map(key => {
     let width = 120; // base width
     if (['id'].includes(key)) width = 20;
@@ -35,16 +42,30 @@ export const ServiceLogsTable = () => {
 
     return {
       field: key,
+      renderCell: params => {
+        const color = getServiceTypeColor(params.row.type);
+        // console.log('color #', color); //  color # 'red'
+        // console.log('params row type #', params.row.type); //  params row type # 'emergency'
+        if (key === 'type') {
+          return (
+            <Typography
+              fontSize={13}
+              color={color}
+              style={{
+                borderRadius: 5,
+                padding: 5,
+                display: 'inline',
+                background: backgroundMap[color],
+              }}>
+              {capitalize(params.value)}
+            </Typography>
+          );
+        }
+      },
       headerName: key.toUpperCase(),
       width,
     };
   });
-
-  const rows = logs.map(log => ({
-    ...log,
-    totalAmount: '$' + log.totalAmount,
-    odometer: log.odometer + ' ml',
-  }));
 
   columns.push({
     field: 'delete',
@@ -61,6 +82,12 @@ export const ServiceLogsTable = () => {
       </IconButton>
     ),
   });
+
+  const rows = logs.map(log => ({
+    ...log,
+    totalAmount: '$' + log.totalAmount,
+    odometer: log.odometer + ' ml',
+  }));
 
   return (
     <Paper sx={{ height: 600, width: '100%' }}>

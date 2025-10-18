@@ -1,3 +1,5 @@
+export type ServiceType = 'planned' | 'unplanned' | 'emergency';
+
 export interface IServiceLog {
   id: string;
   serviceOrder: string;
@@ -6,7 +8,7 @@ export interface IServiceLog {
   truckId: string;
   equipment: string;
   driver: string;
-  type: 'planned' | 'unplanned' | 'emergency';
+  type: ServiceType;
   // startDate: string;
   // endDate: string;
   completedDate: string;
