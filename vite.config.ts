@@ -14,6 +14,7 @@ export default defineConfig({
       helpers: '/src/helpers',
       store: '/src/store',
       styles: '/src/styles',
+      constants: '/src/constants',
     },
   },
 });

@@ -2,7 +2,11 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { CircularProgress, IconButton, Paper, Typography } from '@mui/material';
 import { useAppDispatch, useAppSelector } from 'hooks/redux-hooks.ts';
 import { useEffect } from 'react';
-import { deleteLog, fetchServiceLogs } from 'store/slices/serviceLogsSlice.ts';
+import {
+  deleteLog,
+  fetchServiceLogs,
+  setPagination,
+} from 'store/slices/serviceLogsSlice.ts';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { getServiceTypeColor } from 'helpers/getServiceTypeColor.ts';
 import { capitalize } from 'helpers/stringHelpers.ts';
@@ -10,7 +14,9 @@ import { capitalize } from 'helpers/stringHelpers.ts';
 export const ServiceLogsTable = () => {
   const dispatch = useAppDispatch();
 
-  const { logs, isLoading, error } = useAppSelector(state => state.serviceLogs);
+  const { logs, isLoading, error, page, pageSize } = useAppSelector(
+    state => state.serviceLogs,
+  );
 
   useEffect(() => {
     dispatch(fetchServiceLogs());
@@ -105,8 +111,11 @@ export const ServiceLogsTable = () => {
         }}
         disableRowSelectionOnClick
         pageSizeOptions={[10, 20, 50]}
-        initialState={{
-          pagination: { paginationModel: { pageSize: 10 } },
+        paginationModel={{ page, pageSize }}
+        onPaginationModelChange={model => {
+          dispatch(
+            setPagination({ page: model.page, pageSize: model.pageSize }),
+          );
         }}
       />
     </Paper>

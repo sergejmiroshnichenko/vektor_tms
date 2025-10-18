@@ -2,7 +2,7 @@ import './App.css';
 import { Box, Typography } from '@mui/material';
 import ConstructionIcon from '@mui/icons-material/Construction';
 import { ServiceLogsTable } from 'components/ServiceLogsTable/ServiceLogsTable.tsx';
-import { ServiceTypeFilter } from 'components/ServiceTypeFilter/ServiceTypeFilter.tsx';
+import { ServiceTypesFilter } from 'components/ServiceTypeFilter/ServiceTypesFilter.tsx';
 
 function App() {
   return (
@@ -13,7 +13,7 @@ function App() {
           <Typography fontSize={18}>Service Logs</Typography>
         </Box>
         <Box>
-          <ServiceTypeFilter />
+          <ServiceTypesFilter />
         </Box>
       </header>
       <ServiceLogsTable />

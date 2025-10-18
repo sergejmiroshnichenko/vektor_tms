@@ -1,4 +1,4 @@
-export type ServiceType = 'planned' | 'unplanned' | 'emergency';
+export type ServiceTypes = 'planned' | 'unplanned' | 'emergency';
 
 export interface IServiceLog {
   id: string;
@@ -8,7 +8,7 @@ export interface IServiceLog {
   truckId: string;
   equipment: string;
   driver: string;
-  type: ServiceType;
+  type: ServiceTypes;
   // startDate: string;
   // endDate: string;
   completedDate: string;

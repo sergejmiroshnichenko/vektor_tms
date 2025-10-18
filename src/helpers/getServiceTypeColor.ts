@@ -1,6 +1,6 @@
-import { ServiceType } from 'types/IServiceLog.ts';
+import { ServiceTypes } from 'types/IServiceLog.ts';
 
-export const getServiceTypeColor = (type: ServiceType) => {
+export const getServiceTypeColor = (type: ServiceTypes) => {
   switch (type) {
     case 'planned':
       return 'green';

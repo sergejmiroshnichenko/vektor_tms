@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IServiceLog } from 'types/IServiceLog';
 
 export const fetchServiceLogs = createAsyncThunk<IServiceLog[]>(
@@ -17,20 +17,31 @@ interface serviceLogsState {
   logs: IServiceLog[];
   isLoading: boolean;
   error: string | null;
+  page: number;
+  pageSize: number;
 }
 
 const initialState: serviceLogsState = {
   logs: [],
   isLoading: false,
   error: null,
+  page: 0,
+  pageSize: 10,
 };
 
 const serviceLogsSlice = createSlice({
   name: 'serviceLogs',
   initialState,
   reducers: {
-    deleteLog: (state, action) => {
+    deleteLog: (state, action: PayloadAction<string>) => {
       state.logs = state.logs.filter(item => item.id !== action.payload);
+    },
+    setPagination: (
+      state,
+      action: PayloadAction<{ page: number; pageSize: number }>,
+    ) => {
+      state.page = action.payload.page;
+      state.pageSize = action.payload.pageSize;
     },
   },
   extraReducers: builder => {
@@ -49,5 +60,5 @@ const serviceLogsSlice = createSlice({
   },
 });
 
-export const { deleteLog } = serviceLogsSlice.actions;
+export const { deleteLog, setPagination } = serviceLogsSlice.actions;
 export default serviceLogsSlice.reducer;
