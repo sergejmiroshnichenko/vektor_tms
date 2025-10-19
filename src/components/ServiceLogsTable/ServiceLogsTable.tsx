@@ -14,9 +14,8 @@ import { capitalize } from 'helpers/stringHelpers.ts';
 export const ServiceLogsTable = () => {
   const dispatch = useAppDispatch();
 
-  const { logs, isLoading, error, page, pageSize } = useAppSelector(
-    state => state.serviceLogs,
-  );
+  const { logs, isLoading, error, page, pageSize, selectedServiceTypes } =
+    useAppSelector(state => state.serviceLogs);
 
   useEffect(() => {
     dispatch(fetchServiceLogs());
@@ -89,11 +88,16 @@ export const ServiceLogsTable = () => {
     ),
   });
 
-  const rows = logs.map(log => ({
-    ...log,
-    totalAmount: '$' + log.totalAmount,
-    odometer: log.odometer + ' ml',
-  }));
+  const rows = logs
+    .filter(
+      log =>
+        !selectedServiceTypes.length || selectedServiceTypes.includes(log.type),
+    )
+    .map(log => ({
+      ...log,
+      totalAmount: '$' + log.totalAmount,
+      odometer: log.odometer + ' ml',
+    }));
 
   return (
     <Paper sx={{ height: 600, width: '100%' }}>

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IServiceLog } from 'types/IServiceLog';
+import { IServiceLog, ServiceTypes } from 'types/IServiceLog';
 
 export const fetchServiceLogs = createAsyncThunk<IServiceLog[]>(
   'serviceLogs/fetch',
@@ -17,6 +17,7 @@ interface serviceLogsState {
   logs: IServiceLog[];
   isLoading: boolean;
   error: string | null;
+  selectedServiceTypes: ServiceTypes[];
   page: number;
   pageSize: number;
 }
@@ -25,6 +26,7 @@ const initialState: serviceLogsState = {
   logs: [],
   isLoading: false,
   error: null,
+  selectedServiceTypes: [],
   page: 0,
   pageSize: 10,
 };
@@ -35,6 +37,9 @@ const serviceLogsSlice = createSlice({
   reducers: {
     deleteLog: (state, action: PayloadAction<string>) => {
       state.logs = state.logs.filter(item => item.id !== action.payload);
+    },
+    setSelectedServiceTypes: (state, action: PayloadAction<ServiceTypes[]>) => {
+      state.selectedServiceTypes = action.payload;
     },
     setPagination: (
       state,
@@ -60,5 +65,6 @@ const serviceLogsSlice = createSlice({
   },
 });
 
-export const { deleteLog, setPagination } = serviceLogsSlice.actions;
+export const { deleteLog, setPagination, setSelectedServiceTypes } =
+  serviceLogsSlice.actions;
 export default serviceLogsSlice.reducer;

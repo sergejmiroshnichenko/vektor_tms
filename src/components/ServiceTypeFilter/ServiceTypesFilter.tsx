@@ -1,24 +1,27 @@
 import { Checkbox, FormControlLabel, Typography } from '@mui/material';
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
-import { useState } from 'react';
 import { ServiceTypes } from 'types/IServiceLog.ts';
 import { getServiceTypeColor } from 'helpers/getServiceTypeColor.ts';
-import { useAppSelector } from 'hooks/redux-hooks.ts';
+import { useAppDispatch, useAppSelector } from 'hooks/redux-hooks.ts';
 import { SERVICE_TYPES } from 'constants/serviceTypes.ts';
+import { setSelectedServiceTypes } from 'store/slices/serviceLogsSlice.ts';
 
 export const ServiceTypesFilter = () => {
-  const [selectedTypes, setSelectedTypes] = useState<ServiceTypes[]>([]);
+  const { logs, page, pageSize, selectedServiceTypes } = useAppSelector(
+    state => state.serviceLogs,
+  );
 
-  const { logs, page, pageSize } = useAppSelector(state => state.serviceLogs);
-
-  const handleChange = (type: ServiceTypes) => {
-    setSelectedTypes(prev =>
-      prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type],
-    );
-  };
+  const dispatch = useAppDispatch();
 
   const visibleRows = logs.slice(page * pageSize, (page + 1) * pageSize);
+
+  const toggleServiceTypes = (type: ServiceTypes) => {
+    const newSelected = selectedServiceTypes.includes(type)
+      ? selectedServiceTypes.filter(t => t !== type)
+      : [...selectedServiceTypes, type];
+    dispatch(setSelectedServiceTypes(newSelected));
+  };
 
   const serviceTypeCounts = visibleRows.reduce<Record<string, number>>(
     (acc, { type }) => {
@@ -34,9 +37,13 @@ export const ServiceTypesFilter = () => {
         slotProps={{ typography: { sx: { fontSize: 12 } } }}
         control={
           <Checkbox
-            checked={selectedTypes.length === 3}
+            checked={selectedServiceTypes.length === 3}
             onChange={() =>
-              setSelectedTypes(selectedTypes.length === 3 ? [] : SERVICE_TYPES)
+              dispatch(
+                setSelectedServiceTypes(
+                  selectedServiceTypes.length === 3 ? [] : SERVICE_TYPES,
+                ),
+              )
             }
             icon={<RadioButtonUncheckedIcon />}
             checkedIcon={<RadioButtonCheckedIcon />}
@@ -54,8 +61,8 @@ export const ServiceTypesFilter = () => {
               slotProps={{ typography: { sx: { fontSize: 14 } } }}
               control={
                 <Checkbox
-                  checked={selectedTypes.includes(type)}
-                  onChange={() => handleChange(type)}
+                  checked={selectedServiceTypes.includes(type)}
+                  onChange={() => toggleServiceTypes(type)}
                   icon={<RadioButtonUncheckedIcon />}
                   checkedIcon={<RadioButtonCheckedIcon sx={{ color }} />}
                   size="small"
