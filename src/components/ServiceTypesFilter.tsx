@@ -14,8 +14,6 @@ export const ServiceTypesFilter = () => {
 
   const dispatch = useAppDispatch();
 
-  const visibleRows = logs.slice(page * pageSize, (page + 1) * pageSize);
-
   const toggleServiceTypes = (type: ServiceTypes) => {
     const newSelected = selectedServiceTypes.includes(type)
       ? selectedServiceTypes.filter(t => t !== type)
@@ -23,12 +21,32 @@ export const ServiceTypesFilter = () => {
     dispatch(setSelectedServiceTypes(newSelected));
   };
 
+  // const visibleRows = getFilteredLogsByServiceTypes(
+  //   logs,
+  //   selectedServiceTypes,
+  // ).slice(page * pageSize, (page + 1) * pageSize);
+  //
+  // console.log('visibleRows #', visibleRows);
+
+  const visibleRows = logs
+    .slice(page * pageSize, (page + 1) * pageSize)
+    .filter(log => {
+      const noFiltersSelected = selectedServiceTypes.length === 0;
+      const matchesFiltersSelected = selectedServiceTypes.includes(log.type);
+      return noFiltersSelected || matchesFiltersSelected;
+    });
+
+  const initial: Record<string, number> = {};
+  for (const type of SERVICE_TYPES) {
+    initial[type] = 0;
+  }
+
   const serviceTypeCounts = visibleRows.reduce<Record<string, number>>(
     (acc, { type }) => {
-      acc[type] = (acc[type] || 0) + 1;
+      acc[type] += 1;
       return acc;
     },
-    {},
+    initial,
   );
 
   return (

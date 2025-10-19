@@ -88,22 +88,27 @@ export const ServiceLogsTable = () => {
     ),
   });
 
-  const rows = logs
-    .filter(
-      log =>
-        !selectedServiceTypes.length || selectedServiceTypes.includes(log.type),
-    )
-    .map(log => ({
-      ...log,
-      totalAmount: '$' + log.totalAmount,
-      odometer: log.odometer + ' ml',
-    }));
+  const visibleLogs = logs
+    .slice(page * pageSize, (page + 1) * pageSize)
+    .filter(log => {
+      const noFiltersSelected = selectedServiceTypes.length === 0;
+      const matchesFiltersSelected = selectedServiceTypes.includes(log.type);
+      return noFiltersSelected || matchesFiltersSelected;
+    });
+
+  const rows = visibleLogs.map(log => ({
+    ...log,
+    totalAmount: '$' + log.totalAmount,
+    odometer: log.odometer + ' ml',
+  }));
 
   return (
     <Paper sx={{ height: 600, width: '100%' }}>
       <DataGrid
         rows={rows}
         columns={columns}
+        rowCount={logs.length}
+        paginationMode="server"
         sx={{
           '& .MuiDataGrid-columnHeaderTitle': {
             fontWeight: 700,

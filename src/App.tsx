@@ -1,8 +1,8 @@
 import './App.css';
 import { Box, Typography } from '@mui/material';
 import ConstructionIcon from '@mui/icons-material/Construction';
-import { ServiceLogsTable } from 'components/ServiceLogsTable/ServiceLogsTable.tsx';
-import { ServiceTypesFilter } from 'components/ServiceTypeFilter/ServiceTypesFilter.tsx';
+import { ServiceLogsTable } from 'components/ServiceLogsTable.tsx';
+import { ServiceTypesFilter } from 'components/ServiceTypesFilter.tsx';
 
 function App() {
   return (
