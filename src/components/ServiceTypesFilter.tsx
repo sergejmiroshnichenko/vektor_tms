@@ -6,6 +6,7 @@ import { getServiceTypeColor } from 'helpers/getServiceTypeColor.ts';
 import { useAppDispatch, useAppSelector } from 'hooks/redux-hooks.ts';
 import { SERVICE_TYPES } from 'constants/serviceTypes.ts';
 import { setSelectedServiceTypes } from 'store/slices/serviceLogsSlice.ts';
+import { getPaginatedFilteredLogs } from 'helpers/getFilteredLogsByServiceTypes.ts';
 
 export const ServiceTypesFilter = () => {
   const { logs, page, pageSize, selectedServiceTypes } = useAppSelector(
@@ -14,34 +15,27 @@ export const ServiceTypesFilter = () => {
 
   const dispatch = useAppDispatch();
 
-  const toggleServiceTypes = (type: ServiceTypes) => {
-    const newSelected = selectedServiceTypes.includes(type)
-      ? selectedServiceTypes.filter(t => t !== type)
-      : [...selectedServiceTypes, type];
-    dispatch(setSelectedServiceTypes(newSelected));
-  };
+  // const visibleRows = logs
+  //   .slice(page * pageSize, (page + 1) * pageSize)
+  //   .filter(log => {
+  //     const noFiltersSelected = selectedServiceTypes.length === 0;
+  //     const matchesFiltersSelected = selectedServiceTypes.includes(log.type);
+  //     return noFiltersSelected || matchesFiltersSelected;
+  //   });
 
-  // const visibleRows = getFilteredLogsByServiceTypes(
-  //   logs,
-  //   selectedServiceTypes,
-  // ).slice(page * pageSize, (page + 1) * pageSize);
-  //
-  // console.log('visibleRows #', visibleRows);
-
-  const visibleRows = logs
-    .slice(page * pageSize, (page + 1) * pageSize)
-    .filter(log => {
-      const noFiltersSelected = selectedServiceTypes.length === 0;
-      const matchesFiltersSelected = selectedServiceTypes.includes(log.type);
-      return noFiltersSelected || matchesFiltersSelected;
-    });
+  const visibleLogs = getPaginatedFilteredLogs(
+    logs,
+    selectedServiceTypes,
+    page,
+    pageSize,
+  );
 
   const initial: Record<string, number> = {};
   for (const type of SERVICE_TYPES) {
     initial[type] = 0;
   }
 
-  const serviceTypeCounts = visibleRows.reduce<Record<string, number>>(
+  const serviceTypeCounts = visibleLogs.reduce<Record<string, number>>(
     (acc, { type }) => {
       acc[type] += 1;
       return acc;
@@ -49,20 +43,37 @@ export const ServiceTypesFilter = () => {
     initial,
   );
 
+  const toggleServiceTypes = (type: ServiceTypes) => {
+    let newSelected: ServiceTypes[];
+    if (selectedServiceTypes.includes(type)) {
+      // removing a type
+      newSelected = selectedServiceTypes.filter(t => t !== type);
+      if (newSelected.length === 0) {
+        // if it was the last one, revert to ALL
+        newSelected = [...SERVICE_TYPES];
+      }
+    } else {
+      // add type
+      newSelected = [...selectedServiceTypes, type];
+    }
+    dispatch(setSelectedServiceTypes(newSelected));
+  };
+
+  const toggleAll = () => {
+    // всегда включаем все фильтры при нажатии на ALL
+    dispatch(setSelectedServiceTypes([...SERVICE_TYPES]));
+  };
+
+  const isAllSelected = selectedServiceTypes.length === SERVICE_TYPES.length;
+
   return (
     <div>
       <FormControlLabel
         slotProps={{ typography: { sx: { fontSize: 12 } } }}
         control={
           <Checkbox
-            checked={selectedServiceTypes.length === 3}
-            onChange={() =>
-              dispatch(
-                setSelectedServiceTypes(
-                  selectedServiceTypes.length === 3 ? [] : SERVICE_TYPES,
-                ),
-              )
-            }
+            checked={isAllSelected}
+            onChange={toggleAll}
             icon={<RadioButtonUncheckedIcon />}
             checkedIcon={<RadioButtonCheckedIcon />}
             size="small"

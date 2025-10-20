@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IServiceLog, ServiceTypes } from 'types/IServiceLog';
+import { SERVICE_TYPES } from 'constants/serviceTypes.ts';
 
 export const fetchServiceLogs = createAsyncThunk<IServiceLog[]>(
   'serviceLogs/fetch',
@@ -26,7 +27,7 @@ const initialState: serviceLogsState = {
   logs: [],
   isLoading: false,
   error: null,
-  selectedServiceTypes: [],
+  selectedServiceTypes: SERVICE_TYPES,
   page: 0,
   pageSize: 10,
 };

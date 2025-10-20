@@ -10,6 +10,7 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import { getServiceTypeColor } from 'helpers/getServiceTypeColor.ts';
 import { capitalize } from 'helpers/stringHelpers.ts';
+import { getPaginatedFilteredLogs } from 'helpers/getFilteredLogsByServiceTypes.ts';
 
 export const ServiceLogsTable = () => {
   const dispatch = useAppDispatch();
@@ -88,13 +89,20 @@ export const ServiceLogsTable = () => {
     ),
   });
 
-  const visibleLogs = logs
-    .slice(page * pageSize, (page + 1) * pageSize)
-    .filter(log => {
-      const noFiltersSelected = selectedServiceTypes.length === 0;
-      const matchesFiltersSelected = selectedServiceTypes.includes(log.type);
-      return noFiltersSelected || matchesFiltersSelected;
-    });
+  // const visibleLogs = logs
+  //   .slice(page * pageSize, (page + 1) * pageSize)
+  //   .filter(log => {
+  //     const noFiltersSelected = selectedServiceTypes.length === 0;
+  //     const matchesFiltersSelected = selectedServiceTypes.includes(log.type);
+  //     return noFiltersSelected || matchesFiltersSelected;
+  //   });
+
+  const visibleLogs = getPaginatedFilteredLogs(
+    logs,
+    selectedServiceTypes,
+    page,
+    pageSize,
+  );
 
   const rows = visibleLogs.map(log => ({
     ...log,
