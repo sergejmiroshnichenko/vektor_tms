@@ -27,7 +27,7 @@ const initialState: serviceLogsState = {
   logs: [],
   isLoading: false,
   error: null,
-  selectedServiceTypes: SERVICE_TYPES,
+  selectedServiceTypes: [...SERVICE_TYPES],
   page: 0,
   pageSize: 10,
 };
@@ -40,7 +40,8 @@ const serviceLogsSlice = createSlice({
       state.logs = state.logs.filter(item => item.id !== action.payload);
     },
     setSelectedServiceTypes: (state, action: PayloadAction<ServiceTypes[]>) => {
-      state.selectedServiceTypes = action.payload;
+      state.selectedServiceTypes =
+        action.payload.length === 0 ? [...SERVICE_TYPES] : action.payload;
     },
     setPagination: (
       state,

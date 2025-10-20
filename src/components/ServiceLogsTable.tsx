@@ -10,7 +10,7 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import { getServiceTypeColor } from 'helpers/getServiceTypeColor.ts';
 import { capitalize } from 'helpers/stringHelpers.ts';
-import { getPaginatedFilteredLogs } from 'helpers/getFilteredLogsByServiceTypes.ts';
+import { getPaginatedFilteredLogs } from 'helpers/getPaginatedFilteredLogs.ts';
 
 export const ServiceLogsTable = () => {
   const dispatch = useAppDispatch();
@@ -34,6 +34,7 @@ export const ServiceLogsTable = () => {
   if (error) return <p>Error occurred: {error}</p>;
 
   const headers = logs.length ? Object.keys(logs[0]).map(item => item) : [];
+  console.log('headers serviceTable @', headers);
 
   const backgroundMap: Record<string, string> = {
     green: 'rgba(33, 173, 54, 0.2)',
@@ -111,12 +112,13 @@ export const ServiceLogsTable = () => {
   }));
 
   return (
-    <Paper sx={{ height: 600, width: '100%' }}>
+    <Paper sx={{ height: 500, width: '100%' }}>
       <DataGrid
         rows={rows}
         columns={columns}
         rowCount={logs.length}
         paginationMode="server"
+        rowHeight={32}
         sx={{
           '& .MuiDataGrid-columnHeaderTitle': {
             fontWeight: 700,

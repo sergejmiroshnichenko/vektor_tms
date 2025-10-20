@@ -6,7 +6,7 @@ import { getServiceTypeColor } from 'helpers/getServiceTypeColor.ts';
 import { useAppDispatch, useAppSelector } from 'hooks/redux-hooks.ts';
 import { SERVICE_TYPES } from 'constants/serviceTypes.ts';
 import { setSelectedServiceTypes } from 'store/slices/serviceLogsSlice.ts';
-import { getPaginatedFilteredLogs } from 'helpers/getFilteredLogsByServiceTypes.ts';
+import { getPaginatedFilteredLogs } from 'helpers/getPaginatedFilteredLogs.ts';
 
 export const ServiceTypesFilter = () => {
   const { logs, page, pageSize, selectedServiceTypes } = useAppSelector(
@@ -48,20 +48,11 @@ export const ServiceTypesFilter = () => {
     if (selectedServiceTypes.includes(type)) {
       // removing a type
       newSelected = selectedServiceTypes.filter(t => t !== type);
-      if (newSelected.length === 0) {
-        // if it was the last one, revert to ALL
-        newSelected = [...SERVICE_TYPES];
-      }
     } else {
       // add type
       newSelected = [...selectedServiceTypes, type];
     }
     dispatch(setSelectedServiceTypes(newSelected));
-  };
-
-  const toggleAll = () => {
-    // всегда включаем все фильтры при нажатии на ALL
-    dispatch(setSelectedServiceTypes([...SERVICE_TYPES]));
   };
 
   const isAllSelected = selectedServiceTypes.length === SERVICE_TYPES.length;
@@ -73,7 +64,6 @@ export const ServiceTypesFilter = () => {
         control={
           <Checkbox
             checked={isAllSelected}
-            onChange={toggleAll}
             icon={<RadioButtonUncheckedIcon />}
             checkedIcon={<RadioButtonCheckedIcon />}
             size="small"

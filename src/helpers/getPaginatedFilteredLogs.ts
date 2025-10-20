@@ -6,11 +6,7 @@ export const getPaginatedFilteredLogs = (
   page: number,
   pageSize: number,
 ) => {
-  const noFiltersSelected = selectedServiceTypes.length === 0;
-  const matchesFiltersSelected = logs
+  return logs
     .slice(page * pageSize, (page + 1) * pageSize)
     .filter(log => selectedServiceTypes.includes(log.type));
-  if (noFiltersSelected) return logs;
-
-  return matchesFiltersSelected;
 };
