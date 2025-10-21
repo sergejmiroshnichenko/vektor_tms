@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IServiceLog, ServiceTypes } from 'types/IServiceLog';
 import { SERVICE_TYPES } from 'constants/serviceTypes.ts';
+import { Dayjs } from 'dayjs';
 
 export const fetchServiceLogs = createAsyncThunk<IServiceLog[]>(
   'serviceLogs/fetch',
@@ -21,6 +22,8 @@ interface serviceLogsState {
   selectedServiceTypes: ServiceTypes[];
   page: number;
   pageSize: number;
+  startDate: Dayjs | null;
+  endDate: Dayjs | null;
 }
 
 const initialState: serviceLogsState = {
@@ -30,6 +33,8 @@ const initialState: serviceLogsState = {
   selectedServiceTypes: [...SERVICE_TYPES],
   page: 0,
   pageSize: 10,
+  startDate: null,
+  endDate: null,
 };
 
 const serviceLogsSlice = createSlice({
@@ -50,6 +55,12 @@ const serviceLogsSlice = createSlice({
       state.page = action.payload.page;
       state.pageSize = action.payload.pageSize;
     },
+    setStartDate: (state, action: PayloadAction<Dayjs | null>) => {
+      state.startDate = action.payload;
+    },
+    setEndDate: (state, action: PayloadAction<Dayjs | null>) => {
+      state.endDate = action.payload;
+    },
   },
   extraReducers: builder => {
     builder.addCase(fetchServiceLogs.pending, state => {
@@ -67,6 +78,11 @@ const serviceLogsSlice = createSlice({
   },
 });
 
-export const { deleteLog, setPagination, setSelectedServiceTypes } =
-  serviceLogsSlice.actions;
+export const {
+  deleteLog,
+  setPagination,
+  setSelectedServiceTypes,
+  setStartDate,
+  setEndDate,
+} = serviceLogsSlice.actions;
 export default serviceLogsSlice.reducer;

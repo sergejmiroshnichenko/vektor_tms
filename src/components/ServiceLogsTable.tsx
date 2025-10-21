@@ -1,7 +1,7 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { CircularProgress, IconButton, Paper, Typography } from '@mui/material';
 import { useAppDispatch, useAppSelector } from 'hooks/redux-hooks.ts';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import {
   deleteLog,
   fetchServiceLogs,
@@ -11,30 +11,27 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { getServiceTypeColor } from 'helpers/getServiceTypeColor.ts';
 import { capitalize } from 'helpers/stringHelpers.ts';
 import { getPaginatedFilteredLogs } from 'helpers/getPaginatedFilteredLogs.ts';
+import dayjs from 'dayjs';
 
 export const ServiceLogsTable = () => {
   const dispatch = useAppDispatch();
 
-  const { logs, isLoading, error, page, pageSize, selectedServiceTypes } =
-    useAppSelector(state => state.serviceLogs);
+  const {
+    logs,
+    isLoading,
+    error,
+    page,
+    pageSize,
+    selectedServiceTypes,
+    startDate,
+    endDate,
+  } = useAppSelector(state => state.serviceLogs);
 
   useEffect(() => {
     dispatch(fetchServiceLogs());
   }, [dispatch]);
 
-  if (isLoading) {
-    return (
-      <div
-        style={{ display: 'flex', justifyContent: 'center', paddingTop: 50 }}>
-        <CircularProgress color="primary" />
-      </div>
-    );
-  }
-
-  if (error) return <p>Error occurred: {error}</p>;
-
   const headers = logs.length ? Object.keys(logs[0]).map(item => item) : [];
-  console.log('headers serviceTable @', headers);
 
   const backgroundMap: Record<string, string> = {
     green: 'rgba(33, 173, 54, 0.2)',
@@ -90,14 +87,6 @@ export const ServiceLogsTable = () => {
     ),
   });
 
-  // const visibleLogs = logs
-  //   .slice(page * pageSize, (page + 1) * pageSize)
-  //   .filter(log => {
-  //     const noFiltersSelected = selectedServiceTypes.length === 0;
-  //     const matchesFiltersSelected = selectedServiceTypes.includes(log.type);
-  //     return noFiltersSelected || matchesFiltersSelected;
-  //   });
-
   const visibleLogs = getPaginatedFilteredLogs(
     logs,
     selectedServiceTypes,
@@ -105,11 +94,34 @@ export const ServiceLogsTable = () => {
     pageSize,
   );
 
-  const rows = visibleLogs.map(log => ({
+  const filteredDateLogs = useMemo(() => {
+    if (!startDate || !endDate) return visibleLogs;
+
+    return visibleLogs.filter(log =>
+      dayjs(log.completedDate).isBetween(startDate, endDate, 'day', '[]'),
+    );
+  }, [endDate, startDate, visibleLogs]);
+
+  console.log('filteredDateLogs', filteredDateLogs);
+
+  const rows = filteredDateLogs.map(log => ({
     ...log,
     totalAmount: '$' + log.totalAmount,
     odometer: log.odometer + ' ml',
   }));
+
+  // const visibleLogs = logs.slice(page * pageSize, (page + 1) * pageSize);
+
+  if (isLoading) {
+    return (
+      <div
+        style={{ display: 'flex', justifyContent: 'center', paddingTop: 50 }}>
+        <CircularProgress color="primary" />
+      </div>
+    );
+  }
+
+  if (error) return <p>Error occurred: {error}</p>;
 
   return (
     <Paper sx={{ height: 500, width: '100%' }}>

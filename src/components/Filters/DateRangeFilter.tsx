@@ -1,31 +1,31 @@
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from '@mui/x-date-pickers';
 import { Box } from '@mui/material';
-import { useState } from 'react';
-import { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
+import isBetween from 'dayjs/plugin/isBetween';
 import 'dayjs/locale/ru';
-import { useAppSelector } from 'hooks/redux-hooks.ts';
-import { getPaginatedFilteredLogs } from 'helpers/getPaginatedFilteredLogs.ts';
+import { useAppDispatch, useAppSelector } from 'hooks/redux-hooks.ts';
+import { setEndDate, setStartDate } from 'store/slices/serviceLogsSlice.ts';
+import { CustomDataPicker } from 'components/CustomDatePicker.tsx';
+
+dayjs.extend(isBetween);
 
 export const DateRangeFilter = () => {
-  const [startDate, setStartDate] = useState<Dayjs | null>(null);
-  const [endDate, setEndDate] = useState<Dayjs | null>(null);
+  const { startDate, endDate } = useAppSelector(state => state.serviceLogs);
 
-  const { logs, selectedServiceTypes, page, pageSize } = useAppSelector(
-    state => state.serviceLogs,
-  );
+  const dispatch = useAppDispatch();
 
-  const visibleLogs = getPaginatedFilteredLogs(
-    logs,
-    selectedServiceTypes,
-    page,
-    pageSize,
-  );
-
-  console.log('visibleLogs in DatePicker', visibleLogs);
-
-  console.log('startDate', startDate, 'endDate', endDate);
+  // const visibleLogs = logs.slice(page * pageSize, (page + 1) * pageSize);
+  //
+  // const filteredDateLogs = useMemo(() => {
+  //   if (!startDate || !endDate) return visibleLogs;
+  //
+  //   return visibleLogs.filter(log =>
+  //     dayjs(log.completedDate).isBetween(startDate, endDate, 'day', '[]'),
+  //   );
+  // }, [endDate, startDate, visibleLogs]);
+  //
+  // console.log('filteredDateLogs', filteredDateLogs);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ru">
@@ -37,42 +37,15 @@ export const DateRangeFilter = () => {
           flexWrap: 'wrap',
           padding: '20px 0',
         }}>
-        <DatePicker
-          label="Start Date"
+        <CustomDataPicker
+          label="Start date"
           value={startDate}
-          onChange={newValue => setStartDate(newValue)}
-          slotProps={{
-            textField: {
-              size: 'small',
-              InputProps: {
-                sx: {
-                  fontSize: 14,
-                  padding: '0px 14px',
-                },
-              },
-              sx: {
-                minWidth: 160,
-                width: 160,
-              },
-            },
-          }}
+          onChange={newValue => dispatch(setStartDate(newValue))}
         />
-        <DatePicker
-          label="End Date"
+        <CustomDataPicker
+          label="End date"
           value={endDate}
-          onChange={newValue => setEndDate(newValue)}
-          slotProps={{
-            textField: {
-              size: 'small',
-              InputProps: {
-                sx: {
-                  fontSize: 14,
-                  padding: '0px 14px',
-                },
-              },
-              sx: { minWidth: 160, width: 160 },
-            },
-          }}
+          onChange={newValue => dispatch(setEndDate(newValue))}
         />
       </Box>
     </LocalizationProvider>
