@@ -11,7 +11,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { getServiceTypeColor } from 'helpers/getServiceTypeColor.ts';
 import { capitalize } from 'helpers/stringHelpers.ts';
 import { getPaginatedFilteredLogs } from 'helpers/getPaginatedFilteredLogs.ts';
-import dayjs from 'dayjs';
 
 export const ServiceLogsTable = () => {
   const dispatch = useAppDispatch();
@@ -87,30 +86,22 @@ export const ServiceLogsTable = () => {
     ),
   });
 
-  const visibleLogs = getPaginatedFilteredLogs(
-    logs,
-    selectedServiceTypes,
-    page,
-    pageSize,
-  );
+  const filteredPaginatedLogs = useMemo(() => {
+    return getPaginatedFilteredLogs({
+      logs,
+      page,
+      pageSize,
+      selectedServiceTypes,
+      startDate,
+      endDate,
+    });
+  }, [logs, page, pageSize, startDate, endDate, selectedServiceTypes]);
 
-  const filteredDateLogs = useMemo(() => {
-    if (!startDate || !endDate) return visibleLogs;
-
-    return visibleLogs.filter(log =>
-      dayjs(log.completedDate).isBetween(startDate, endDate, 'day', '[]'),
-    );
-  }, [endDate, startDate, visibleLogs]);
-
-  console.log('filteredDateLogs', filteredDateLogs);
-
-  const rows = filteredDateLogs.map(log => ({
+  const rows = filteredPaginatedLogs.map(log => ({
     ...log,
     totalAmount: '$' + log.totalAmount,
     odometer: log.odometer + ' ml',
   }));
-
-  // const visibleLogs = logs.slice(page * pageSize, (page + 1) * pageSize);
 
   if (isLoading) {
     return (

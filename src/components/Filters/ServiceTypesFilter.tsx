@@ -6,42 +6,37 @@ import { getServiceTypeColor } from 'helpers/getServiceTypeColor.ts';
 import { useAppDispatch, useAppSelector } from 'hooks/redux-hooks.ts';
 import { SERVICE_TYPES } from 'constants/serviceTypes.ts';
 import { setSelectedServiceTypes } from 'store/slices/serviceLogsSlice.ts';
+import { useMemo } from 'react';
 import { getPaginatedFilteredLogs } from 'helpers/getPaginatedFilteredLogs.ts';
 
 export const ServiceTypesFilter = () => {
-  const { logs, page, pageSize, selectedServiceTypes } = useAppSelector(
-    state => state.serviceLogs,
-  );
+  const { logs, page, pageSize, selectedServiceTypes, startDate, endDate } =
+    useAppSelector(state => state.serviceLogs);
 
   const dispatch = useAppDispatch();
 
-  // const visibleRows = logs
-  //   .slice(page * pageSize, (page + 1) * pageSize)
-  //   .filter(log => {
-  //     const noFiltersSelected = selectedServiceTypes.length === 0;
-  //     const matchesFiltersSelected = selectedServiceTypes.includes(log.type);
-  //     return noFiltersSelected || matchesFiltersSelected;
-  //   });
-
-  const visibleLogs = getPaginatedFilteredLogs(
-    logs,
-    selectedServiceTypes,
-    page,
-    pageSize,
-  );
+  const filteredPaginatedLogs = useMemo(() => {
+    return getPaginatedFilteredLogs({
+      logs,
+      page,
+      pageSize,
+      selectedServiceTypes,
+      endDate,
+      startDate,
+    });
+  }, [logs, page, pageSize, selectedServiceTypes, startDate, endDate]);
 
   const initial: Record<string, number> = {};
   for (const type of SERVICE_TYPES) {
     initial[type] = 0;
   }
 
-  const serviceTypeCounts = visibleLogs.reduce<Record<string, number>>(
-    (acc, { type }) => {
-      acc[type] += 1;
-      return acc;
-    },
-    initial,
-  );
+  const serviceTypeCounts = filteredPaginatedLogs.reduce<
+    Record<string, number>
+  >((acc, { type }) => {
+    acc[type] += 1;
+    return acc;
+  }, initial);
 
   const toggleServiceTypes = (type: ServiceTypes) => {
     let newSelected: ServiceTypes[];
