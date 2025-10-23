@@ -15,18 +15,6 @@ export const DateRangeFilter = () => {
 
   const dispatch = useAppDispatch();
 
-  // const visibleLogs = logs.slice(page * pageSize, (page + 1) * pageSize);
-  //
-  // const filteredDateLogs = useMemo(() => {
-  //   if (!startDate || !endDate) return visibleLogs;
-  //
-  //   return visibleLogs.filter(log =>
-  //     dayjs(log.completedDate).isBetween(startDate, endDate, 'day', '[]'),
-  //   );
-  // }, [endDate, startDate, visibleLogs]);
-  //
-  // console.log('filteredDateLogs', filteredDateLogs);
-
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ru">
       <Box

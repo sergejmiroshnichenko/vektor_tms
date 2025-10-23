@@ -8,9 +8,15 @@ import {
   setPagination,
 } from 'store/slices/serviceLogsSlice.ts';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { getServiceTypeColor } from 'helpers/getServiceTypeColor.ts';
 import { capitalize } from 'helpers/stringHelpers.ts';
 import { getPaginatedFilteredLogs } from 'helpers/getPaginatedFilteredLogs.ts';
+import {
+  HEADERS,
+  SERVICE_LOGS_COLUMN_WIDTHS,
+  SERVICE_TYPE_BG_COLOR,
+} from 'constants/serviceTypes.ts';
 
 export const ServiceLogsTable = () => {
   const dispatch = useAppDispatch();
@@ -24,32 +30,26 @@ export const ServiceLogsTable = () => {
     selectedServiceTypes,
     startDate,
     endDate,
+    searchQuery,
   } = useAppSelector(state => state.serviceLogs);
 
   useEffect(() => {
     dispatch(fetchServiceLogs());
   }, [dispatch]);
 
-  const headers = logs.length ? Object.keys(logs[0]).map(item => item) : [];
-
-  const backgroundMap: Record<string, string> = {
-    green: 'rgba(33, 173, 54, 0.2)',
-    red: 'rgba(239, 83, 80, 0.2)',
-    orange: 'rgba(255, 165, 0, 0.2)',
-  };
-
-  const columns: GridColDef[] = headers.map(key => {
-    let width = 120; // base width
-    if (['id'].includes(key)) width = 20;
-    if (['providerId'].includes(key)) width = 100;
-
+  const columns: GridColDef[] = HEADERS.map(({ field, headerName }) => {
+    const width = SERVICE_LOGS_COLUMN_WIDTHS[field] ?? 130;
     return {
-      field: key,
+      field,
+      headerName: headerName.toUpperCase(),
+      width,
       renderCell: params => {
-        const color = getServiceTypeColor(params.row.type);
+        const type = params.row.type;
+        const color = getServiceTypeColor(type);
+        const value = params.value;
         // console.log('color #', color); //  color # 'red'
         // console.log('params row type #', params.row.type); //  params row type # 'emergency'
-        if (key === 'type') {
+        if (field === 'type') {
           return (
             <Typography
               fontSize={13}
@@ -58,31 +58,42 @@ export const ServiceLogsTable = () => {
                 borderRadius: 5,
                 padding: 5,
                 display: 'inline',
-                background: backgroundMap[color],
+                background: SERVICE_TYPE_BG_COLOR[type],
               }}>
               {capitalize(params.value)}
             </Typography>
           );
         }
+        if (field === 'odometer') {
+          return <Typography fontSize={12}>{value + ' ml'}</Typography>;
+        }
+        if (field === 'totalAmount') {
+          return <Typography fontSize={13}>{'$' + value}</Typography>;
+        }
       },
-      headerName: key.toUpperCase(),
-      width,
     };
   });
 
   columns.push({
-    field: 'delete',
+    field: 'action',
     headerName: '',
-    width: 50,
     sortable: false,
     filterable: false,
     renderCell: params => (
-      <IconButton
-        size="small"
-        color="error"
-        onClick={() => dispatch(deleteLog(params.row.id))}>
-        <DeleteIcon />
-      </IconButton>
+      <>
+        <IconButton
+          size="small"
+          color="secondary"
+          onClick={() => dispatch(deleteLog(params.row.id))}>
+          <EditOutlinedIcon />
+        </IconButton>
+        <IconButton
+          size="small"
+          color="error"
+          onClick={() => dispatch(deleteLog(params.row.id))}>
+          <DeleteIcon />
+        </IconButton>
+      </>
     ),
   });
 
@@ -94,14 +105,17 @@ export const ServiceLogsTable = () => {
       selectedServiceTypes,
       startDate,
       endDate,
+      searchQuery,
     });
-  }, [logs, page, pageSize, startDate, endDate, selectedServiceTypes]);
-
-  const rows = filteredPaginatedLogs.map(log => ({
-    ...log,
-    totalAmount: '$' + log.totalAmount,
-    odometer: log.odometer + ' ml',
-  }));
+  }, [
+    logs,
+    page,
+    pageSize,
+    startDate,
+    endDate,
+    selectedServiceTypes,
+    searchQuery,
+  ]);
 
   if (isLoading) {
     return (
@@ -117,18 +131,20 @@ export const ServiceLogsTable = () => {
   return (
     <Paper sx={{ height: 500, width: '100%' }}>
       <DataGrid
-        rows={rows}
+        rows={filteredPaginatedLogs}
         columns={columns}
         rowCount={logs.length}
         paginationMode="server"
-        rowHeight={32}
+        rowHeight={36}
         sx={{
           '& .MuiDataGrid-columnHeaderTitle': {
             fontWeight: 700,
             fontSize: 11,
           },
           '& .MuiDataGrid-cell': {
-            fontSize: 12,
+            fontSize: 13,
+            display: 'flex',
+            alignItems: 'center',
           },
         }}
         disableRowSelectionOnClick

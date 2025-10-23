@@ -10,8 +10,15 @@ import { useMemo } from 'react';
 import { getPaginatedFilteredLogs } from 'helpers/getPaginatedFilteredLogs.ts';
 
 export const ServiceTypesFilter = () => {
-  const { logs, page, pageSize, selectedServiceTypes, startDate, endDate } =
-    useAppSelector(state => state.serviceLogs);
+  const {
+    logs,
+    page,
+    pageSize,
+    selectedServiceTypes,
+    startDate,
+    endDate,
+    searchQuery,
+  } = useAppSelector(state => state.serviceLogs);
 
   const dispatch = useAppDispatch();
 
@@ -23,8 +30,17 @@ export const ServiceTypesFilter = () => {
       selectedServiceTypes,
       endDate,
       startDate,
+      searchQuery,
     });
-  }, [logs, page, pageSize, selectedServiceTypes, startDate, endDate]);
+  }, [
+    logs,
+    page,
+    pageSize,
+    selectedServiceTypes,
+    startDate,
+    endDate,
+    searchQuery,
+  ]);
 
   const initial: Record<string, number> = {};
   for (const type of SERVICE_TYPES) {
