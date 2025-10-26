@@ -20,12 +20,6 @@ export const HEADERS = [
   { field: 'totalAmount', headerName: 'Total Amount' },
 ];
 
-export const SERVICE_TYPE_BG_COLOR: Record<string, string> = {
-  planned: 'rgba(33, 173, 54, 0.2)',
-  unplanned: 'rgba(255, 165, 0, 0.2)',
-  emergency: 'rgba(239, 83, 80, 0.2)',
-};
-
 export const SERVICE_LOGS_COLUMN_WIDTHS: Record<string, number> = {
   id: 60,
   providerId: 90,

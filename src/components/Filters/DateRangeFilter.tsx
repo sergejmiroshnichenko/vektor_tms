@@ -6,7 +6,7 @@ import isBetween from 'dayjs/plugin/isBetween';
 import 'dayjs/locale/ru';
 import { useAppDispatch, useAppSelector } from 'hooks/redux-hooks.ts';
 import { setEndDate, setStartDate } from 'store/slices/serviceLogsSlice.ts';
-import { CustomDataPicker } from 'components/CustomDatePicker.tsx';
+import { CustomDatePicker } from 'components/CustomDatePicker.tsx';
 
 dayjs.extend(isBetween);
 
@@ -22,18 +22,19 @@ export const DateRangeFilter = () => {
           display: 'flex',
           gap: 2,
           alignItems: 'center',
-          flexWrap: 'wrap',
           padding: '20px 0',
+          maxWidth: '350px',
         }}>
-        <CustomDataPicker
+        <CustomDatePicker
           label="Start date"
           value={startDate}
           onChange={newValue => dispatch(setStartDate(newValue))}
         />
-        <CustomDataPicker
+        <CustomDatePicker
           label="End date"
           value={endDate}
           onChange={newValue => dispatch(setEndDate(newValue))}
+          shouldDisabledDate={date => date.isBefore(startDate, 'day')}
         />
       </Box>
     </LocalizationProvider>

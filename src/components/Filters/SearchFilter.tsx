@@ -21,7 +21,7 @@ export const SearchFilter = () => {
       icon="search"
       value={searchQuery}
       onChange={handleChange}
-      sx={{ minWidth: 260 }}
+      sx={{ maxWidth: 260 }}
     />
   );
 };

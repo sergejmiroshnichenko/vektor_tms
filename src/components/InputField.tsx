@@ -1,18 +1,17 @@
 import { InputAdornment, TextField } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import { ReactNode } from 'react';
 
 interface InputFieldProps {
   label?: string;
   placeholder?: string;
   value: string | number;
   onChange: (value: string) => void;
-  type?: string;
-  name?: string;
   icon?: 'search' | 'none';
-  size?: 'small' | 'medium';
-  fullWidth?: boolean;
-  disabled?: boolean;
+  endAdornment?: 'ml' | 'h';
   required?: boolean;
+  select?: boolean;
+  children?: ReactNode;
   sx?: object;
 }
 
@@ -21,28 +20,25 @@ export const InputField = ({
   placeholder,
   value,
   onChange,
-  type = 'text',
-  name,
   icon = 'none',
-  size = 'small',
-  fullWidth = false,
-  disabled = false,
+  endAdornment,
   required = false,
+  select = false,
+  children,
   sx = {},
 }: InputFieldProps) => {
   const isEmpty = !value || String(value).trim() === '';
+
   return (
     <TextField
-      name={name}
+      select={select}
       label={label}
       placeholder={placeholder}
       value={value}
       onChange={e => onChange(e.target.value)}
-      type={type}
-      size={size}
-      fullWidth={fullWidth}
-      disabled={disabled}
+      fullWidth
       required={required}
+      size="small"
       variant="outlined"
       sx={{
         '& .MuiInputBase-root': {
@@ -50,27 +46,25 @@ export const InputField = ({
           backgroundColor: isEmpty ? '#f5f5f5' : 'white',
           transition: 'background-color 0.2s ease',
         },
-        // '& .MuiOutlinedInput-notchedOutline': {
-        //   borderColor: '#ccc',
-        // },
-        // '&:hover .MuiOutlinedInput-notchedOutline': {
-        //   borderColor: '#999',
-        // },
         ...sx,
       }}
       slotProps={{
+        inputLabel: { sx: { fontSize: 14 } },
         input: {
-          startAdornment:
-            icon === 'search' ? (
-              <InputAdornment position="start">
-                <SearchIcon
-                  fontSize="small"
-                  sx={{ color: isEmpty ? '#9e9e9e' : '#616161' }}
-                />
-              </InputAdornment>
-            ) : undefined,
+          startAdornment: icon === 'search' && (
+            <InputAdornment position="start">
+              <SearchIcon
+                fontSize="small"
+                sx={{ color: isEmpty ? '#9e9e9e' : '#616161' }}
+              />
+            </InputAdornment>
+          ),
+          endAdornment: endAdornment && (
+            <InputAdornment position="end">{endAdornment}</InputAdornment>
+          ),
         },
-      }}
-    />
+      }}>
+      {select && children}
+    </TextField>
   );
 };

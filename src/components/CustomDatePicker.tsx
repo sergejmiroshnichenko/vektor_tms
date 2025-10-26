@@ -1,35 +1,42 @@
 import { DatePicker } from '@mui/x-date-pickers';
-import { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import 'dayjs/locale/ru';
 
 interface CustomDatePickerProps {
   label: string;
-  value: Dayjs | null;
+  value?: Dayjs | null;
   onChange: (newValue: Dayjs | null) => void;
+  defaultToday?: boolean;
+  shouldDisabledDate?: (day: Dayjs) => boolean;
+  required?: boolean;
 }
 
-export const CustomDataPicker = ({
+export const CustomDatePicker = ({
   onChange,
   label,
   value,
+  defaultToday = false,
+  shouldDisabledDate,
+  required = false,
 }: CustomDatePickerProps) => {
+  const resolvedValue = value ?? (defaultToday ? dayjs() : null);
+
   return (
     <DatePicker
       label={label}
-      value={value}
+      value={resolvedValue}
       onChange={onChange}
+      shouldDisableDate={shouldDisabledDate}
       slotProps={{
         textField: {
           size: 'small',
+          required,
+          fullWidth: true,
           InputProps: {
             sx: {
               fontSize: 14,
-              padding: '0px 14px',
+              height: '100%',
             },
-          },
-          sx: {
-            minWidth: 160,
-            width: 160,
           },
         },
       }}

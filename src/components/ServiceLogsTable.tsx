@@ -1,22 +1,26 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { CircularProgress, IconButton, Paper, Typography } from '@mui/material';
+import {
+  CircularProgress,
+  IconButton,
+  Paper,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import { useAppDispatch, useAppSelector } from 'hooks/redux-hooks.ts';
 import { useEffect, useMemo } from 'react';
 import {
   deleteLog,
   fetchServiceLogs,
+  setModalActive,
   setPagination,
 } from 'store/slices/serviceLogsSlice.ts';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import { getServiceTypeColor } from 'helpers/getServiceTypeColor.ts';
+import { SERVICE_TYPE_STYLES } from 'helpers/getServiceTypeColor.ts';
 import { capitalize } from 'helpers/stringHelpers.ts';
 import { getPaginatedFilteredLogs } from 'helpers/getPaginatedFilteredLogs.ts';
-import {
-  HEADERS,
-  SERVICE_LOGS_COLUMN_WIDTHS,
-  SERVICE_TYPE_BG_COLOR,
-} from 'constants/serviceTypes.ts';
+import { HEADERS, SERVICE_LOGS_COLUMN_WIDTHS } from 'constants/serviceTypes.ts';
+import { ServiceTypes } from 'types/IServiceLog.ts';
 
 export const ServiceLogsTable = () => {
   const dispatch = useAppDispatch();
@@ -44,12 +48,12 @@ export const ServiceLogsTable = () => {
       headerName: headerName.toUpperCase(),
       width,
       renderCell: params => {
-        const type = params.row.type;
-        const color = getServiceTypeColor(type);
+        const type = params.row.type as ServiceTypes;
         const value = params.value;
         // console.log('color #', color); //  color # 'red'
         // console.log('params row type #', params.row.type); //  params row type # 'emergency'
         if (field === 'type') {
+          const { color, bg } = SERVICE_TYPE_STYLES[type];
           return (
             <Typography
               fontSize={13}
@@ -58,7 +62,7 @@ export const ServiceLogsTable = () => {
                 borderRadius: 5,
                 padding: 5,
                 display: 'inline',
-                background: SERVICE_TYPE_BG_COLOR[type],
+                background: bg,
               }}>
               {capitalize(params.value)}
             </Typography>
@@ -81,18 +85,25 @@ export const ServiceLogsTable = () => {
     filterable: false,
     renderCell: params => (
       <>
-        <IconButton
-          size="small"
-          color="secondary"
-          onClick={() => dispatch(deleteLog(params.row.id))}>
-          <EditOutlinedIcon />
-        </IconButton>
-        <IconButton
-          size="small"
-          color="error"
-          onClick={() => dispatch(deleteLog(params.row.id))}>
-          <DeleteIcon />
-        </IconButton>
+        <Tooltip title="Edit">
+          <IconButton
+            size="small"
+            color="secondary"
+            onClick={() => {
+              console.log('id', params.row.id);
+              dispatch(setModalActive(true));
+            }}>
+            <EditOutlinedIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Delete">
+          <IconButton
+            size="small"
+            color="error"
+            onClick={() => dispatch(deleteLog(params.row.id))}>
+            <DeleteIcon />
+          </IconButton>
+        </Tooltip>
       </>
     ),
   });

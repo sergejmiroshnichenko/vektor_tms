@@ -25,6 +25,7 @@ interface serviceLogsState {
   startDate: Dayjs | null;
   endDate: Dayjs | null;
   searchQuery: string;
+  modalActive: boolean;
 }
 
 const initialState: serviceLogsState = {
@@ -37,6 +38,7 @@ const initialState: serviceLogsState = {
   startDate: null,
   endDate: null,
   searchQuery: '',
+  modalActive: false,
 };
 
 const serviceLogsSlice = createSlice({
@@ -66,6 +68,9 @@ const serviceLogsSlice = createSlice({
     setSearchQuery: (state, action: PayloadAction<string>) => {
       state.searchQuery = action.payload;
     },
+    setModalActive: (state, action: PayloadAction<boolean>) => {
+      state.modalActive = action.payload;
+    },
   },
   extraReducers: builder => {
     builder.addCase(fetchServiceLogs.pending, state => {
@@ -90,5 +95,6 @@ export const {
   setStartDate,
   setEndDate,
   setSearchQuery,
+  setModalActive,
 } = serviceLogsSlice.actions;
 export default serviceLogsSlice.reducer;

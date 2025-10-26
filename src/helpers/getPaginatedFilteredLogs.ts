@@ -27,13 +27,13 @@ export const getPaginatedFilteredLogs = ({
       dayjs(log.completedDate).isBetween(startDate, endDate, 'day', '[]'),
     )
     .filter(log => {
-      const q = searchQuery.toLowerCase();
-      return (
-        log.serviceOrder.toLowerCase().includes(q) ||
-        log.driver.toLowerCase().includes(q) ||
-        log.equipment.toLowerCase().includes(q) ||
-        log.serviceDescription.toLowerCase().includes(q) ||
-        log.type.toLowerCase().includes(q)
-      );
+      const q = searchQuery.trim().toLowerCase();
+      return [
+        log.serviceOrder,
+        log.driver,
+        log.equipment,
+        log.serviceDescription,
+        log.type,
+      ].some(value => value.toLowerCase().includes(q));
     });
 };
