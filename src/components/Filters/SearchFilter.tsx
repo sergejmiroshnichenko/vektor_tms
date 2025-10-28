@@ -14,6 +14,15 @@ export const SearchFilter = () => {
     }
   };
 
+  // const handleInputChange = useCallback(
+  //   debounce((value: string) => {                                  Д О Б А В И Т Ь
+  //     if (setSearchKeyword) {
+  //       setSearchKeyword(value);
+  //     }
+  //   }, 300),
+  //   [setSearchKeyword]
+  // );
+
   return (
     <InputField
       label="Search"

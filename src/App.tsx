@@ -1,33 +1,52 @@
 import './App.css';
-import { Box, Typography } from '@mui/material';
+import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import ConstructionIcon from '@mui/icons-material/Construction';
 import { ServiceLogsTable } from 'components/ServiceLogsTable.tsx';
 import { ServiceTypesFilter } from 'components/Filters/ServiceTypesFilter.tsx';
 import { DateRangeFilter } from 'components/Filters/DateRangeFilter.tsx';
 import { SearchFilter } from 'components/Filters/SearchFilter.tsx';
 import { CustomModal } from 'components/CustomModal.tsx';
+import { setModalActive } from 'store/slices/serviceLogsSlice.ts';
+import { useAppDispatch } from 'hooks/redux-hooks.ts';
 
 function App() {
+  const dispatch = useAppDispatch();
+
   return (
-    <section>
-      <header>
-        <div style={{ display: 'flex', gap: 50 }}>
+    <Box>
+      <AppBar position="static" color="transparent" elevation={0}>
+        <Toolbar
+          disableGutters
+          sx={{
+            gap: 5,
+            flexWrap: 'wrap',
+          }}>
           <Box display="flex" alignItems="center" gap={0.8}>
             <ConstructionIcon />
-            <Typography fontSize={18}>Service Logs</Typography>
+            <Typography
+              component="h1"
+              sx={{ fontSize: 18, fontWeight: 'bold' }}>
+              Service Logs
+            </Typography>
           </Box>
           <SearchFilter />
-          <Box>
-            <ServiceTypesFilter />
-          </Box>
-        </div>
-        <Box>
-          <DateRangeFilter />
-        </Box>
-      </header>
+          <ServiceTypesFilter />
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{ marginLeft: 'auto' }}
+            onClick={() => {
+              dispatch(setModalActive(true));
+            }}>
+            <AddIcon sx={{ fontSize: 20, mr: 1.2 }} /> ADD
+          </Button>
+        </Toolbar>
+        <DateRangeFilter />
+      </AppBar>
       <ServiceLogsTable />
       <CustomModal />
-    </section>
+    </Box>
   );
 }
 

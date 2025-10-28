@@ -16,7 +16,7 @@ import {
 } from 'store/slices/serviceLogsSlice.ts';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import { SERVICE_TYPE_STYLES } from 'helpers/getServiceTypeColor.ts';
+import { getServiceTypeStyle } from 'helpers/getServiceTypeColor.ts';
 import { capitalize } from 'helpers/stringHelpers.ts';
 import { getPaginatedFilteredLogs } from 'helpers/getPaginatedFilteredLogs.ts';
 import { HEADERS, SERVICE_LOGS_COLUMN_WIDTHS } from 'constants/serviceTypes.ts';
@@ -53,7 +53,7 @@ export const ServiceLogsTable = () => {
         // console.log('color #', color); //  color # 'red'
         // console.log('params row type #', params.row.type); //  params row type # 'emergency'
         if (field === 'type') {
-          const { color, bg } = SERVICE_TYPE_STYLES[type];
+          const { color, bg } = getServiceTypeStyle(type);
           return (
             <Typography
               fontSize={13}
@@ -90,7 +90,6 @@ export const ServiceLogsTable = () => {
             size="small"
             color="secondary"
             onClick={() => {
-              console.log('id', params.row.id);
               dispatch(setModalActive(true));
             }}>
             <EditOutlinedIcon />

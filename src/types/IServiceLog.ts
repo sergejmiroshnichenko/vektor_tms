@@ -9,8 +9,6 @@ export interface IServiceLog {
   equipment: string;
   driver: string;
   type: ServiceTypes;
-  // startDate: string;
-  // endDate: string;
   completedDate: string;
   odometer: number;
   engineHours: number;

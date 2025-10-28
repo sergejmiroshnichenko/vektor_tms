@@ -22,7 +22,7 @@ export const DateRangeFilter = () => {
           display: 'flex',
           gap: 2,
           alignItems: 'center',
-          padding: '20px 0',
+          py: 2,
           maxWidth: '350px',
         }}>
         <CustomDatePicker

@@ -16,7 +16,8 @@ export const Section = ({
   children,
   direction,
 }: SectionProps) => (
-  <Box sx={{ mb: 3 }}>
+  <Box
+    sx={{ mb: 2, background: 'white', borderRadius: '10px', padding: '20px' }}>
     <Box
       sx={{
         display: 'flex',

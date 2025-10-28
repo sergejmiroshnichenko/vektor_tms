@@ -9,5 +9,5 @@ export const SERVICE_TYPE_STYLES: Record<
   emergency: { color: 'red', bg: 'rgba(239,83,80,0.2)' },
 };
 
-export const getServiceTypeColor = (type: ServiceTypes) =>
-  SERVICE_TYPE_STYLES[type].color;
+export const getServiceTypeStyle = (type: ServiceTypes) =>
+  SERVICE_TYPE_STYLES[type];

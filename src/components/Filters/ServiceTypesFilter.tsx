@@ -2,12 +2,12 @@ import { Checkbox, FormControlLabel, Typography } from '@mui/material';
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import { ServiceTypes } from 'types/IServiceLog.ts';
-import { getServiceTypeColor } from 'helpers/getServiceTypeColor.ts';
 import { useAppDispatch, useAppSelector } from 'hooks/redux-hooks.ts';
 import { SERVICE_TYPES } from 'constants/serviceTypes.ts';
 import { setSelectedServiceTypes } from 'store/slices/serviceLogsSlice.ts';
 import { useMemo } from 'react';
 import { getPaginatedFilteredLogs } from 'helpers/getPaginatedFilteredLogs.ts';
+import { getServiceTypeStyle } from 'helpers/getServiceTypeColor.ts';
 
 export const ServiceTypesFilter = () => {
   const {
@@ -83,7 +83,8 @@ export const ServiceTypesFilter = () => {
         label="ALL"
       />
       {SERVICE_TYPES.map(type => {
-        const color = getServiceTypeColor(type);
+        // const color = getServiceTypeColor(type);
+        const color = getServiceTypeStyle(type);
         return (
           <>
             <FormControlLabel
