@@ -35,7 +35,6 @@ export const CustomDatePicker = ({
           InputProps: {
             sx: {
               fontSize: 14,
-              height: '100%',
             },
           },
         },
@@ -43,3 +42,5 @@ export const CustomDatePicker = ({
     />
   );
 };
+
+// MuiFormControl-root MuiFormControl-fullWidth MuiPickersTextField-root Mui-required css-19y0qf7-MuiFormControl-root-MuiPickersTextField-root

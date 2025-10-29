@@ -13,7 +13,7 @@ import { useAppDispatch, useAppSelector } from 'hooks/redux-hooks.ts';
 import { SERVICE_TYPES } from 'constants/serviceTypes.ts';
 import { capitalize } from 'helpers/stringHelpers.ts';
 import { getServiceTypeStyle } from 'helpers/getServiceTypeColor.ts';
-import { setModalActive } from 'store/slices/serviceLogsSlice.ts';
+import { addNewLog, setModalActive } from 'store/slices/serviceLogsSlice.ts';
 import { CustomDatePicker } from 'components/CustomDatePicker.tsx';
 import dayjs from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -26,26 +26,26 @@ import FireTruckIcon from '@mui/icons-material/FireTruck';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import { InputField } from 'components/InputField.tsx';
 import { Section } from 'components/Section.tsx';
-import { ServiceTypes } from 'types/IServiceLog.ts';
+import { IServiceLog, ServiceTypes } from 'types/IServiceLog.ts';
 import { Controller, Resolver, useForm, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { serviceLogSchema } from 'validation/serviceLogSchema.ts';
 import { useEffect } from 'react';
 
 export const CustomModal = () => {
-  const { modalActive } = useAppSelector(state => state.serviceLogs);
+  const { modalActive, logs } = useAppSelector(state => state.serviceLogs);
 
   const dispatch = useAppDispatch();
 
   type FormValues = {
     provider: string;
     serviceOrder: string;
-    toggleButton: 'truck' | 'trailer';
+    toggleButton: 'truck' | 'trailer' | '';
     odometer: number | undefined;
     engineHours: number | undefined;
     dateIn: dayjs.Dayjs;
     dateOut: dayjs.Dayjs | undefined;
-    type: 'planned' | 'unplanned' | 'emergency';
+    type: 'planned' | 'unplanned' | 'emergency' | '';
     serviceDescription: string | undefined;
   };
 
@@ -56,18 +56,32 @@ export const CustomModal = () => {
     defaultValues: {
       provider: '',
       serviceOrder: '',
-      toggleButton: 'truck',
+      toggleButton: '',
       odometer: undefined,
       engineHours: undefined,
       dateIn: dayjs(),
       dateOut: dayjs().add(1, 'day'),
-      type: 'planned',
+      type: '',
       serviceDescription: '',
     },
   });
 
   const onSubmit = (data: FormValues) => {
     console.log('Form data', data);
+    const newLog: IServiceLog = {
+      id: String(logs.length + 1),
+      serviceOrder: data.serviceOrder,
+      provider: data.provider,
+      equipment: data.toggleButton,
+      driver: '',
+      type: data.type as ServiceTypes,
+      completedDate: data.dateIn.toISOString(),
+      odometer: data.odometer ?? 0,
+      engineHours: data.engineHours ?? 0,
+      serviceDescription: data.serviceDescription ?? '',
+      totalAmount: 0,
+    };
+    dispatch(addNewLog(newLog));
   };
 
   const onClose = () => {
@@ -83,6 +97,7 @@ export const CustomModal = () => {
     }
   }, [dateIn, setValue]);
 
+  const toggleValue = watch('toggleButton');
   const type = watch('type');
   const selectedType = (type || 'planned') as ServiceTypes;
   const { bg } = getServiceTypeStyle(selectedType);
@@ -104,7 +119,10 @@ export const CustomModal = () => {
         </DialogActions>
       </Box>
       <DialogContent sx={{ background: '#f5f5f5' }}>
-        <form id="service-log-form" onSubmit={handleSubmit(onSubmit)}>
+        <form
+          id="service-log-form"
+          noValidate
+          onSubmit={handleSubmit(onSubmit)}>
           <Section
             title="1.Provider Details"
             icon={<PrivacyTipIcon color="primary" />}
@@ -128,52 +146,51 @@ export const CustomModal = () => {
           <Section
             title="2.Equipment"
             icon={<DirectionsCarIcon color="primary" />}
-            direction={'row'}
+            direction="row"
             action={
-              <Controller
-                name="toggleButton"
-                control={control}
-                render={({ field }) => (
-                  <ToggleButtonGroup
-                    color="primary"
-                    exclusive
-                    value={field.value}
-                    onChange={(_, value) => value && field.onChange(value)}
-                    sx={{
-                      '& .MuiToggleButton-root': {
-                        textTransform: 'none',
-                        fontWeight: 'bold',
-                        height: '20px',
-                      },
-                    }}>
-                    <ToggleButton value="truck" sx={{ gap: 1 }}>
-                      <FireTruckIcon sx={{ fontSize: 18 }} />
-                      Truck
-                    </ToggleButton>
-                    <ToggleButton value="trailer" sx={{ gap: 1 }}>
-                      <LocalShippingIcon sx={{ fontSize: 18 }} />
-                      Trailer
-                    </ToggleButton>
-                  </ToggleButtonGroup>
-                )}
-              />
+              <ToggleButtonGroup
+                color="primary"
+                exclusive
+                value={toggleValue}
+                onChange={(_, value) =>
+                  value &&
+                  // ToggleButtonGroup synchronise with InputField through setValue
+                  setValue('toggleButton', value, { shouldValidate: true })
+                }
+                sx={{
+                  '& .MuiToggleButton-root': {
+                    textTransform: 'none',
+                    fontWeight: 'bold',
+                    height: '20px',
+                  },
+                }}>
+                <ToggleButton value="truck" sx={{ gap: 1 }}>
+                  <FireTruckIcon sx={{ fontSize: 18 }} />
+                  Truck
+                </ToggleButton>
+                <ToggleButton value="trailer" sx={{ gap: 1 }}>
+                  <LocalShippingIcon sx={{ fontSize: 18 }} />
+                  Trailer
+                </ToggleButton>
+              </ToggleButtonGroup>
             }>
-            <Controller
+            <InputField
               name="toggleButton"
               control={control}
-              render={({ field }) => (
-                <InputField
-                  {...field}
-                  label={field.value === 'truck' ? 'Truck' : 'Trailer'}
-                  value={field.value}
-                  sx={{ flex: 2 }}
-                  select
-                  required>
-                  <MenuItem value="truck">Truck</MenuItem>
-                  <MenuItem value="trailer">Trailer</MenuItem>
-                </InputField>
-              )}
-            />
+              label={
+                toggleValue
+                  ? toggleValue === 'truck'
+                    ? 'Truck'
+                    : 'Trailer'
+                  : 'Select type'
+              }
+              select
+              required
+              sx={{ flex: 2 }}>
+              <MenuItem value="truck">Truck</MenuItem>
+              <MenuItem value="trailer">Trailer</MenuItem>
+            </InputField>
+
             <InputField
               name="odometer"
               control={control}
@@ -243,7 +260,7 @@ export const CustomModal = () => {
                 required
                 sx={{
                   '& .MuiInputBase-root': {
-                    backgroundColor: type ? bg : 'transparent',
+                    backgroundColor: type ? bg : '#f5f5f5',
                     transition: 'background-color 0.3s ease',
                   },
                 }}>

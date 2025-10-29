@@ -6,7 +6,7 @@ import { Dayjs } from 'dayjs';
 export const fetchServiceLogs = createAsyncThunk<IServiceLog[]>(
   'serviceLogs/fetch',
   async () => {
-    const response = await fetch('/service_Logs.json');
+    const response = await fetch('/serviceLogs.json');
     if (!response.ok) {
       throw new Error(`Failed fetch serviceLogs.json: ${response.status}`);
     }
@@ -26,6 +26,7 @@ interface serviceLogsState {
   endDate: Dayjs | null;
   searchQuery: string;
   modalActive: boolean;
+  newLog: IServiceLog | null; // new Logs delete
 }
 
 const initialState: serviceLogsState = {
@@ -39,6 +40,7 @@ const initialState: serviceLogsState = {
   endDate: null,
   searchQuery: '',
   modalActive: false,
+  newLog: null, // new Logs delete
 };
 
 const serviceLogsSlice = createSlice({
@@ -71,6 +73,9 @@ const serviceLogsSlice = createSlice({
     setModalActive: (state, action: PayloadAction<boolean>) => {
       state.modalActive = action.payload;
     },
+    addNewLog: (state, action: PayloadAction<IServiceLog>) => {
+      state.logs.push(action.payload);
+    },
   },
   extraReducers: builder => {
     builder.addCase(fetchServiceLogs.pending, state => {
@@ -96,5 +101,6 @@ export const {
   setEndDate,
   setSearchQuery,
   setModalActive,
+  addNewLog,
 } = serviceLogsSlice.actions;
 export default serviceLogsSlice.reducer;

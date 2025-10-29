@@ -4,8 +4,6 @@ export interface IServiceLog {
   id: string;
   serviceOrder: string;
   provider: string;
-  providerId: string;
-  truckId: string;
   equipment: string;
   driver: string;
   type: ServiceTypes;

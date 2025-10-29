@@ -49,7 +49,7 @@ export const InputField = ({
         select={select}
         label={label}
         placeholder={placeholder}
-        value={fieldValue}
+        value={fieldValue ?? ''}
         onChange={e => handleChange(e.target.value)}
         fullWidth
         required={required}

@@ -9,7 +9,7 @@ export const SERVICE_TYPES: ServiceTypes[] = [
 export const HEADERS = [
   { field: 'id', headerName: 'ID' },
   { field: 'serviceOrder', headerName: 'Service Order' },
-  { field: 'providerId', headerName: 'Provider ID' },
+  { field: 'provider', headerName: 'Provider' },
   { field: 'equipment', headerName: 'Equipment' },
   { field: 'driver', headerName: 'Driver' },
   { field: 'type', headerName: 'Type' },
@@ -21,14 +21,14 @@ export const HEADERS = [
 ];
 
 export const SERVICE_LOGS_COLUMN_WIDTHS: Record<string, number> = {
-  id: 60,
-  providerId: 90,
-  // serviceOrder: 120,
+  id: 40,
+  // provider: 90,
+  serviceOrder: 100,
   // equipment: 120,
   // driver: 150,
   serviceDescription: 200,
   // completedDate: 130,
-  // totalAmount: 120,
+  totalAmount: 110,
   odometer: 110,
   engineHours: 110,
   // type: 110,
