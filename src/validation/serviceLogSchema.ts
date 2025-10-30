@@ -10,7 +10,7 @@ export const serviceLogSchema = yup.object({
     .string()
     .matches(/^[A-Za-z\s]+$/, 'Provider must contain only english letters')
     .required('Service order is required'),
-  toggleButton: yup
+  equipment: yup
     .string()
     .oneOf(['truck', 'trailer'], 'Equipment type is required')
     .required('Equipment type is required'),

@@ -33,14 +33,18 @@ import { serviceLogSchema } from 'validation/serviceLogSchema.ts';
 import { useEffect } from 'react';
 
 export const CustomModal = () => {
-  const { modalActive, logs } = useAppSelector(state => state.serviceLogs);
+  const { modalActive, logs, editingLog } = useAppSelector(
+    state => state.serviceLogs,
+  );
 
   const dispatch = useAppDispatch();
+
+  console.log('лог в форму для редактирования', editingLog);
 
   type FormValues = {
     provider: string;
     serviceOrder: string;
-    toggleButton: 'truck' | 'trailer' | '';
+    equipment: string;
     odometer: number | undefined;
     engineHours: number | undefined;
     dateIn: dayjs.Dayjs;
@@ -53,17 +57,30 @@ export const CustomModal = () => {
     mode: 'onChange',
     reValidateMode: 'onChange',
     resolver: yupResolver(serviceLogSchema) as Resolver<FormValues>,
-    defaultValues: {
-      provider: '',
-      serviceOrder: '',
-      toggleButton: '',
-      odometer: undefined,
-      engineHours: undefined,
-      dateIn: dayjs(),
-      dateOut: dayjs().add(1, 'day'),
-      type: '',
-      serviceDescription: '',
-    },
+    defaultValues: editingLog
+      ? {
+          provider: editingLog.provider,
+          serviceOrder: editingLog.serviceOrder,
+          equipment: editingLog.equipment,
+          // driver: editingLog.driver,
+          type: editingLog.type,
+          dateIn: dayjs(editingLog.completedDate),
+          odometer: editingLog.odometer,
+          engineHours: editingLog.engineHours,
+          serviceDescription: editingLog.serviceDescription,
+          // totalAmount: editingLog.totalAmount,
+        }
+      : {
+          provider: '',
+          serviceOrder: '',
+          equipment: '',
+          odometer: undefined,
+          engineHours: undefined,
+          dateIn: dayjs(),
+          dateOut: dayjs().add(1, 'day'),
+          type: '',
+          serviceDescription: '',
+        },
   });
 
   const onSubmit = (data: FormValues) => {
@@ -72,10 +89,10 @@ export const CustomModal = () => {
       id: String(logs.length + 1),
       serviceOrder: data.serviceOrder,
       provider: data.provider,
-      equipment: data.toggleButton,
+      equipment: data.equipment,
       driver: '',
       type: data.type as ServiceTypes,
-      completedDate: data.dateIn.toISOString(),
+      completedDate: data.dateIn.format('YYYY-MM-DD'),
       odometer: data.odometer ?? 0,
       engineHours: data.engineHours ?? 0,
       serviceDescription: data.serviceDescription ?? '',
@@ -97,7 +114,7 @@ export const CustomModal = () => {
     }
   }, [dateIn, setValue]);
 
-  const toggleValue = watch('toggleButton');
+  const toggleValue = watch('equipment');
   const type = watch('type');
   const selectedType = (type || 'planned') as ServiceTypes;
   const { bg } = getServiceTypeStyle(selectedType);
@@ -110,7 +127,7 @@ export const CustomModal = () => {
           justifyContent: 'space-between',
           background: '#f5f5f5',
         }}>
-        <DialogTitle>Edit Log</DialogTitle>
+        <DialogTitle>{editingLog ? 'Edit Log' : 'Create new log'}</DialogTitle>
         <DialogActions>
           <Button type="submit" form="service-log-form" variant="contained">
             Save
@@ -155,7 +172,7 @@ export const CustomModal = () => {
                 onChange={(_, value) =>
                   value &&
                   // ToggleButtonGroup synchronise with InputField through setValue
-                  setValue('toggleButton', value, { shouldValidate: true })
+                  setValue('equipment', value, { shouldValidate: true })
                 }
                 sx={{
                   '& .MuiToggleButton-root': {
@@ -175,7 +192,7 @@ export const CustomModal = () => {
               </ToggleButtonGroup>
             }>
             <InputField
-              name="toggleButton"
+              name="equipment"
               control={control}
               label={
                 toggleValue

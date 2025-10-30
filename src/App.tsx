@@ -7,11 +7,15 @@ import { ServiceTypesFilter } from 'components/Filters/ServiceTypesFilter.tsx';
 import { DateRangeFilter } from 'components/Filters/DateRangeFilter.tsx';
 import { SearchFilter } from 'components/Filters/SearchFilter.tsx';
 import { CustomModal } from 'components/CustomModal.tsx';
-import { setModalActive } from 'store/slices/serviceLogsSlice.ts';
-import { useAppDispatch } from 'hooks/redux-hooks.ts';
+import {
+  setEditingLog,
+  setModalActive,
+} from 'store/slices/serviceLogsSlice.ts';
+import { useAppDispatch, useAppSelector } from 'hooks/redux-hooks.ts';
 
 function App() {
   const dispatch = useAppDispatch();
+  const { modalActive } = useAppSelector(state => state.serviceLogs);
 
   return (
     <Box>
@@ -37,6 +41,7 @@ function App() {
             color="primary"
             sx={{ marginLeft: 'auto' }}
             onClick={() => {
+              dispatch(setEditingLog(null));
               dispatch(setModalActive(true));
             }}>
             <AddIcon sx={{ fontSize: 20, mr: 1.2 }} /> ADD
@@ -45,7 +50,7 @@ function App() {
         <DateRangeFilter />
       </AppBar>
       <ServiceLogsTable />
-      <CustomModal />
+      {modalActive && <CustomModal />}
     </Box>
   );
 }

@@ -27,7 +27,7 @@ export const SearchFilter = () => {
     <InputField
       label="Search"
       placeholder="Search..."
-      icon="search"
+      showSearchIcon
       value={searchQuery}
       onChange={handleChange}
       sx={{ maxWidth: 260 }}

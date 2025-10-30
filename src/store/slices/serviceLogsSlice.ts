@@ -26,7 +26,7 @@ interface serviceLogsState {
   endDate: Dayjs | null;
   searchQuery: string;
   modalActive: boolean;
-  newLog: IServiceLog | null; // new Logs delete
+  editingLog: IServiceLog | null;
 }
 
 const initialState: serviceLogsState = {
@@ -40,7 +40,7 @@ const initialState: serviceLogsState = {
   endDate: null,
   searchQuery: '',
   modalActive: false,
-  newLog: null, // new Logs delete
+  editingLog: null,
 };
 
 const serviceLogsSlice = createSlice({
@@ -76,6 +76,9 @@ const serviceLogsSlice = createSlice({
     addNewLog: (state, action: PayloadAction<IServiceLog>) => {
       state.logs.push(action.payload);
     },
+    setEditingLog: (state, action: PayloadAction<IServiceLog | null>) => {
+      state.editingLog = action.payload;
+    },
   },
   extraReducers: builder => {
     builder.addCase(fetchServiceLogs.pending, state => {
@@ -102,5 +105,6 @@ export const {
   setSearchQuery,
   setModalActive,
   addNewLog,
+  setEditingLog,
 } = serviceLogsSlice.actions;
 export default serviceLogsSlice.reducer;

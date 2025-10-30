@@ -11,6 +11,7 @@ import { useEffect, useMemo } from 'react';
 import {
   deleteLog,
   fetchServiceLogs,
+  setEditingLog,
   setModalActive,
   setPagination,
 } from 'store/slices/serviceLogsSlice.ts';
@@ -38,8 +39,10 @@ export const ServiceLogsTable = () => {
   } = useAppSelector(state => state.serviceLogs);
 
   useEffect(() => {
-    dispatch(fetchServiceLogs());
-  }, [dispatch]);
+    if (!logs.length) {
+      dispatch(fetchServiceLogs());
+    }
+  }, [dispatch, logs.length]);
 
   const columns: GridColDef[] = HEADERS.map(({ field, headerName }) => {
     const width = SERVICE_LOGS_COLUMN_WIDTHS[field] ?? 130;
@@ -90,6 +93,7 @@ export const ServiceLogsTable = () => {
             size="small"
             color="secondary"
             onClick={() => {
+              dispatch(setEditingLog(params.row));
               dispatch(setModalActive(true));
             }}>
             <EditOutlinedIcon />

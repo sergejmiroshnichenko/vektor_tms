@@ -12,7 +12,7 @@ interface InputFieldProps {
   placeholder?: string;
   value?: string | number;
   onChange?: (value: string) => void;
-  icon?: 'search' | 'none';
+  showSearchIcon?: boolean;
   endAdornment?: 'ml' | 'h';
   required?: boolean;
   select?: boolean;
@@ -28,7 +28,7 @@ export const InputField = ({
   placeholder,
   value,
   onChange,
-  icon = 'none',
+  showSearchIcon = false,
   endAdornment,
   required = false,
   select = false,
@@ -71,7 +71,7 @@ export const InputField = ({
         slotProps={{
           inputLabel: { sx: { fontSize: 14 } },
           input: {
-            startAdornment: icon === 'search' && (
+            startAdornment: showSearchIcon && (
               <InputAdornment position="start">
                 <SearchIcon
                   fontSize="small"

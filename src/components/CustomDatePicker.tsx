@@ -42,5 +42,3 @@ export const CustomDatePicker = ({
     />
   );
 };
-
-// MuiFormControl-root MuiFormControl-fullWidth MuiPickersTextField-root Mui-required css-19y0qf7-MuiFormControl-root-MuiPickersTextField-root
