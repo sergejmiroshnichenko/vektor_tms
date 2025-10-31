@@ -79,6 +79,12 @@ const serviceLogsSlice = createSlice({
     setEditingLog: (state, action: PayloadAction<IServiceLog | null>) => {
       state.editingLog = action.payload;
     },
+    setUpdateLog: (state, action: PayloadAction<IServiceLog>) => {
+      state.logs = state.logs.map(log =>
+        log.id === action.payload.id ? action.payload : log,
+      );
+      state.modalActive = false;
+    },
   },
   extraReducers: builder => {
     builder.addCase(fetchServiceLogs.pending, state => {
@@ -106,5 +112,6 @@ export const {
   setModalActive,
   addNewLog,
   setEditingLog,
+  setUpdateLog,
 } = serviceLogsSlice.actions;
 export default serviceLogsSlice.reducer;

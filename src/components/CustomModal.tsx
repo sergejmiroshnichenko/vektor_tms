@@ -13,7 +13,11 @@ import { useAppDispatch, useAppSelector } from 'hooks/redux-hooks.ts';
 import { SERVICE_TYPES } from 'constants/serviceTypes.ts';
 import { capitalize } from 'helpers/stringHelpers.ts';
 import { getServiceTypeStyle } from 'helpers/getServiceTypeColor.ts';
-import { addNewLog, setModalActive } from 'store/slices/serviceLogsSlice.ts';
+import {
+  addNewLog,
+  setModalActive,
+  setUpdateLog,
+} from 'store/slices/serviceLogsSlice.ts';
 import { CustomDatePicker } from 'components/CustomDatePicker.tsx';
 import dayjs from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -85,20 +89,36 @@ export const CustomModal = () => {
 
   const onSubmit = (data: FormValues) => {
     console.log('Form data', data);
-    const newLog: IServiceLog = {
-      id: String(logs.length + 1),
-      serviceOrder: data.serviceOrder,
-      provider: data.provider,
-      equipment: data.equipment,
-      driver: '',
-      type: data.type as ServiceTypes,
-      completedDate: data.dateIn.format('YYYY-MM-DD'),
-      odometer: data.odometer ?? 0,
-      engineHours: data.engineHours ?? 0,
-      serviceDescription: data.serviceDescription ?? '',
-      totalAmount: 0,
-    };
-    dispatch(addNewLog(newLog));
+    if (!editingLog) {
+      const newLog: IServiceLog = {
+        id: String(logs.length + 1),
+        serviceOrder: data.serviceOrder,
+        provider: data.provider,
+        equipment: data.equipment,
+        driver: '',
+        type: data.type as ServiceTypes,
+        completedDate: data.dateIn.format('YYYY-MM-DD'),
+        odometer: data.odometer ?? 0,
+        engineHours: data.engineHours ?? 0,
+        serviceDescription: data.serviceDescription ?? '',
+        totalAmount: 0,
+      };
+      dispatch(addNewLog(newLog));
+    } else {
+      const updatedLog = {
+        ...editingLog,
+        ...data,
+        type: data.type as ServiceTypes,
+        completedDate: data.dateIn.format('YYYY-MM-DD'),
+        totalAmount: editingLog.totalAmount,
+        driver: editingLog.driver,
+        id: editingLog.id,
+        odometer: data.odometer ?? 0,
+        engineHours: data.engineHours ?? 0,
+        serviceDescription: data.serviceDescription ?? '',
+      };
+      dispatch(setUpdateLog(updatedLog));
+    }
   };
 
   const onClose = () => {
@@ -132,7 +152,7 @@ export const CustomModal = () => {
           <Button type="submit" form="service-log-form" variant="contained">
             Save
           </Button>
-          <Button onClick={onClose}>Cancel</Button>
+          <Button onClick={onClose}>Close</Button>
         </DialogActions>
       </Box>
       <DialogContent sx={{ background: '#f5f5f5' }}>
@@ -195,12 +215,14 @@ export const CustomModal = () => {
               name="equipment"
               control={control}
               label={
-                toggleValue
-                  ? toggleValue === 'truck'
-                    ? 'Truck'
-                    : 'Trailer'
-                  : 'Select type'
+                'Equipment'
+                // toggleValue
+                // ? toggleValue === 'truck'
+                //   ? 'Truck'
+                //   : 'Trailer'
+                // : 'Select type'
               }
+              value={toggleValue}
               select
               required
               sx={{ flex: 2 }}>
