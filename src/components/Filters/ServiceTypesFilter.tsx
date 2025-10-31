@@ -75,6 +75,11 @@ export const ServiceTypesFilter = () => {
         control={
           <Checkbox
             checked={isAllSelected}
+            onChange={() => {
+              if (!isAllSelected) {
+                dispatch(setSelectedServiceTypes([...SERVICE_TYPES]));
+              }
+            }}
             icon={<RadioButtonUncheckedIcon />}
             checkedIcon={<RadioButtonCheckedIcon />}
             size="small"
