@@ -1,5 +1,6 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import {
+  Box,
   CircularProgress,
   IconButton,
   Paper,
@@ -21,7 +22,9 @@ import { getServiceTypeStyle } from 'helpers/getServiceTypeColor.ts';
 import { capitalize } from 'helpers/stringHelpers.ts';
 import { getPaginatedFilteredLogs } from 'helpers/getPaginatedFilteredLogs.ts';
 import { HEADERS, SERVICE_LOGS_COLUMN_WIDTHS } from 'constants/serviceTypes.ts';
-import { ServiceTypes } from 'types/IServiceLog.ts';
+import { IServiceLog, ServiceTypes } from 'types/IServiceLog.ts';
+import { HighlightTextParts } from 'components/HighlightTextParts.tsx';
+import dayjs from 'dayjs';
 
 export const ServiceLogsTable = () => {
   const dispatch = useAppDispatch();
@@ -44,42 +47,52 @@ export const ServiceLogsTable = () => {
     }
   }, [dispatch, logs.length]);
 
-  const columns: GridColDef[] = HEADERS.map(({ field, headerName }) => {
-    const width = SERVICE_LOGS_COLUMN_WIDTHS[field] ?? 130;
-    return {
-      field,
-      headerName: headerName.toUpperCase(),
-      width,
-      renderCell: params => {
-        const type = params.row.type as ServiceTypes;
-        const value = params.value;
-        // console.log('color #', color); //  color # 'red'
-        // console.log('params row type #', params.row.type); //  params row type # 'emergency'
-        if (field === 'type') {
-          const { color, bg } = getServiceTypeStyle(type);
-          return (
-            <Typography
-              fontSize={13}
-              color={color}
-              style={{
-                borderRadius: 5,
-                padding: 5,
-                display: 'inline',
-                background: bg,
-              }}>
-              {capitalize(params.value)}
-            </Typography>
-          );
-        }
-        if (field === 'odometer') {
-          return <Typography fontSize={12}>{value + ' ml'}</Typography>;
-        }
-        if (field === 'totalAmount') {
-          return <Typography fontSize={13}>{'$' + value}</Typography>;
-        }
-      },
-    };
-  });
+  const columns: GridColDef<IServiceLog>[] = HEADERS.map(
+    ({ field, headerName }) => {
+      const width = SERVICE_LOGS_COLUMN_WIDTHS[field] ?? 130;
+      return {
+        field,
+        headerName: headerName.toUpperCase(),
+        width,
+        renderCell: params => {
+          const type = params.row.type as ServiceTypes;
+          const value = params.value;
+          // console.log('color #', color); //  color # 'red'
+          // console.log('params row type #', params.row.type); //  params row type # 'emergency'
+          if (field === 'type') {
+            const { color, bg } = getServiceTypeStyle(type);
+            return (
+              <Typography
+                fontSize={13}
+                color={color}
+                style={{
+                  borderRadius: 5,
+                  padding: 5,
+                  display: 'inline',
+                  background: bg,
+                }}>
+                {HighlightTextParts(capitalize(params.value), searchQuery)}
+              </Typography>
+            );
+          }
+          if (field === 'completedDate') {
+            return (
+              <Typography fontSize={13}>
+                {dayjs(value).format('DD/MM/YYYY')}
+              </Typography>
+            );
+          }
+          if (field === 'odometer') {
+            return <Typography fontSize={13}>{value + ' ml'}</Typography>;
+          }
+          if (field === 'totalAmount') {
+            return <Typography fontSize={13}>{'$' + value}</Typography>;
+          }
+          return <>{HighlightTextParts(String(params.value), searchQuery)}</>;
+        },
+      };
+    },
+  );
 
   columns.push({
     field: 'action',
@@ -133,14 +146,20 @@ export const ServiceLogsTable = () => {
 
   if (isLoading) {
     return (
-      <div
-        style={{ display: 'flex', justifyContent: 'center', paddingTop: 50 }}>
+      <Box display="flex" justifyContent="center" pt={6}>
         <CircularProgress color="primary" />
-      </div>
+      </Box>
     );
   }
 
-  if (error) return <p>Error occurred: {error}</p>;
+  if (error)
+    return (
+      <Box display="flex" justifyContent="center" pt={6}>
+        <Typography color="error" variant="body1">
+          Error occurred: {error}
+        </Typography>
+      </Box>
+    );
 
   return (
     <Paper sx={{ height: 500, width: '100%' }}>
@@ -153,10 +172,10 @@ export const ServiceLogsTable = () => {
         sx={{
           '& .MuiDataGrid-columnHeaderTitle': {
             fontWeight: 700,
-            fontSize: 11,
+            fontSize: 12,
           },
           '& .MuiDataGrid-cell': {
-            fontSize: 13,
+            fontSize: 14,
             display: 'flex',
             alignItems: 'center',
           },

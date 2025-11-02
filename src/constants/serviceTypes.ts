@@ -1,4 +1,4 @@
-import { ServiceTypes } from 'types/IServiceLog.ts';
+import { IServiceLog, ServiceTypes } from 'types/IServiceLog.ts';
 
 export const SERVICE_TYPES: ServiceTypes[] = [
   'planned',
@@ -6,7 +6,7 @@ export const SERVICE_TYPES: ServiceTypes[] = [
   'emergency',
 ];
 
-export const HEADERS = [
+export const HEADERS: { field: keyof IServiceLog; headerName: string }[] = [
   { field: 'id', headerName: 'ID' },
   { field: 'serviceOrder', headerName: 'Service Order' },
   { field: 'provider', headerName: 'Provider' },
@@ -20,16 +20,14 @@ export const HEADERS = [
   { field: 'totalAmount', headerName: 'Total Amount' },
 ];
 
-export const SERVICE_LOGS_COLUMN_WIDTHS: Record<string, number> = {
+export const SERVICE_LOGS_COLUMN_WIDTHS: Partial<
+  Record<keyof IServiceLog, number>
+> = {
   id: 40,
-  // provider: 90,
-  serviceOrder: 100,
-  // equipment: 120,
-  // driver: 150,
-  serviceDescription: 200,
-  // completedDate: 130,
-  totalAmount: 110,
+  provider: 150,
+  serviceOrder: 110,
+  serviceDescription: 210,
+  totalAmount: 120,
   odometer: 110,
   engineHours: 110,
-  // type: 110,
 };

@@ -33,8 +33,13 @@ import { Section } from 'components/Section.tsx';
 import { IServiceLog, ServiceTypes } from 'types/IServiceLog.ts';
 import { Controller, Resolver, useForm, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { serviceLogSchema } from 'validation/serviceLogSchema.ts';
+import { serviceLogSchema } from 'components/ServiceLogForm/serviceLogSchema.ts';
 import { useEffect } from 'react';
+import { FormValues } from 'components/ServiceLogForm/FormValues.types.ts';
+import {
+  getEmptyValues,
+  getInitialEditValues,
+} from 'components/ServiceLogForm/FormInitialValues.ts';
 
 export const CustomModal = () => {
   const { modalActive, logs, editingLog } = useAppSelector(
@@ -43,48 +48,15 @@ export const CustomModal = () => {
 
   const dispatch = useAppDispatch();
 
-  console.log('лог в форму для редактирования', editingLog);
-
-  type FormValues = {
-    provider: string;
-    serviceOrder: string;
-    equipment: string;
-    odometer: number | undefined;
-    engineHours: number | undefined;
-    dateIn: dayjs.Dayjs;
-    dateOut: dayjs.Dayjs | undefined;
-    type: 'planned' | 'unplanned' | 'emergency' | '';
-    serviceDescription: string | undefined;
-  };
+  console.log('editingLog - row in table', editingLog);
 
   const { control, watch, setValue, handleSubmit } = useForm<FormValues>({
     mode: 'onChange',
     reValidateMode: 'onChange',
     resolver: yupResolver(serviceLogSchema) as Resolver<FormValues>,
     defaultValues: editingLog
-      ? {
-          provider: editingLog.provider,
-          serviceOrder: editingLog.serviceOrder,
-          equipment: editingLog.equipment,
-          // driver: editingLog.driver,
-          type: editingLog.type,
-          dateIn: dayjs(editingLog.completedDate),
-          odometer: editingLog.odometer,
-          engineHours: editingLog.engineHours,
-          serviceDescription: editingLog.serviceDescription,
-          // totalAmount: editingLog.totalAmount,
-        }
-      : {
-          provider: '',
-          serviceOrder: '',
-          equipment: '',
-          odometer: undefined,
-          engineHours: undefined,
-          dateIn: dayjs(),
-          dateOut: dayjs().add(1, 'day'),
-          type: '',
-          serviceDescription: '',
-        },
+      ? getInitialEditValues(editingLog)
+      : getEmptyValues(),
   });
 
   const onSubmit = (data: FormValues) => {
@@ -97,7 +69,7 @@ export const CustomModal = () => {
         equipment: data.equipment,
         driver: '',
         type: data.type as ServiceTypes,
-        completedDate: data.dateIn.format('YYYY-MM-DD'),
+        completedDate: data.dateIn.format('DD/MM/YYYY'),
         odometer: data.odometer ?? 0,
         engineHours: data.engineHours ?? 0,
         serviceDescription: data.serviceDescription ?? '',
@@ -109,7 +81,7 @@ export const CustomModal = () => {
         ...editingLog,
         ...data,
         type: data.type as ServiceTypes,
-        completedDate: data.dateIn.format('YYYY-MM-DD'),
+        completedDate: data.dateIn.format('DD/MM/YYYY'),
         totalAmount: editingLog.totalAmount,
         driver: editingLog.driver,
         id: editingLog.id,
@@ -136,8 +108,7 @@ export const CustomModal = () => {
 
   const toggleValue = watch('equipment');
   const type = watch('type');
-  const selectedType = (type || 'planned') as ServiceTypes;
-  const { bg } = getServiceTypeStyle(selectedType);
+  const { bg } = getServiceTypeStyle(type);
 
   return (
     <Dialog open={modalActive} onClose={onClose} fullWidth maxWidth="md">
@@ -303,7 +274,7 @@ export const CustomModal = () => {
                     transition: 'background-color 0.3s ease',
                   },
                 }}>
-                {SERVICE_TYPES.map(typeOption => {
+                {SERVICE_TYPES.map((typeOption: ServiceTypes) => {
                   const { color } = getServiceTypeStyle(typeOption);
                   return (
                     <MenuItem key={typeOption} value={typeOption}>

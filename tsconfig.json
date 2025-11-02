@@ -42,9 +42,6 @@
       "constants/*": [
         "constants/*"
       ],
-      "validation/*": [
-        "validation/*"
-      ]
     },
     /* Linting */
     "strict": true,

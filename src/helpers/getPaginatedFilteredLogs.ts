@@ -40,7 +40,11 @@ export const getPaginatedFilteredLogs = ({
         log.driver,
         log.equipment,
         log.serviceDescription,
+        log.provider,
         log.type,
-      ].some(value => value.toLowerCase().includes(q));
+      ].some(value => {
+        // console.log('value q', value.toLowerCase().includes(q));
+        return value.toLowerCase().includes(q);
+      });
     });
 };

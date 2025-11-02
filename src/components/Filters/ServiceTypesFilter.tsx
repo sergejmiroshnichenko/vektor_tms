@@ -1,4 +1,4 @@
-import { Checkbox, FormControlLabel, Typography } from '@mui/material';
+import { Box, Checkbox, FormControlLabel, Typography } from '@mui/material';
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import { ServiceTypes } from 'types/IServiceLog.ts';
@@ -42,13 +42,13 @@ export const ServiceTypesFilter = () => {
     searchQuery,
   ]);
 
-  const initial: Record<string, number> = {};
+  const initial = {} as Record<ServiceTypes, number>;
   for (const type of SERVICE_TYPES) {
     initial[type] = 0;
   }
 
   const serviceTypeCounts = filteredPaginatedLogs.reduce<
-    Record<string, number>
+    Record<ServiceTypes, number>
   >((acc, { type }) => {
     acc[type] += 1;
     return acc;
@@ -69,7 +69,7 @@ export const ServiceTypesFilter = () => {
   const isAllSelected = selectedServiceTypes.length === SERVICE_TYPES.length;
 
   return (
-    <div>
+    <Box display="flex">
       <FormControlLabel
         slotProps={{ typography: { sx: { fontSize: 12 } } }}
         control={
@@ -91,9 +91,8 @@ export const ServiceTypesFilter = () => {
         // const color = getServiceTypeColor(type);
         const color = getServiceTypeStyle(type);
         return (
-          <>
+          <Box key={type}>
             <FormControlLabel
-              key={type}
               slotProps={{ typography: { sx: { fontSize: 14 } } }}
               control={
                 <Checkbox
@@ -117,9 +116,9 @@ export const ServiceTypesFilter = () => {
               }}>
               {serviceTypeCounts[type]}
             </Typography>
-          </>
+          </Box>
         );
       })}
-    </div>
+    </Box>
   );
 };

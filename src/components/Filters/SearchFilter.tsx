@@ -8,20 +8,11 @@ export const SearchFilter = () => {
 
   const dispatch = useAppDispatch();
 
-  const handleChange = (newValue: string) => {
-    if (isLetterOnly(newValue) || newValue === '') {
+  const handleInputChange = (newValue: string) => {
+    if (isLetterOnly(newValue)) {
       dispatch(setSearchQuery(newValue));
     }
   };
-
-  // const handleInputChange = useCallback(
-  //   debounce((value: string) => {                                  Д О Б А В И Т Ь
-  //     if (setSearchKeyword) {
-  //       setSearchKeyword(value);
-  //     }
-  //   }, 300),
-  //   [setSearchKeyword]
-  // );
 
   return (
     <InputField
@@ -29,7 +20,7 @@ export const SearchFilter = () => {
       placeholder="Search..."
       showSearchIcon
       value={searchQuery}
-      onChange={handleChange}
+      onChange={handleInputChange}
       sx={{ maxWidth: 260 }}
     />
   );
