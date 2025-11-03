@@ -2,7 +2,7 @@ import { InputAdornment, TextField } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { Control, Controller } from 'react-hook-form';
 import { ReactNode } from 'react';
-import { filteredNumber, filterEnglishWords } from 'helpers/stringHelpers.ts';
+import { sanitizeInputValue } from 'helpers/stringHelpers.ts';
 
 interface InputFieldProps {
   name?: string;
@@ -89,33 +89,24 @@ export const InputField = ({
     );
   };
 
-  //  Option 1: if control + name → use Controller (React Hook Form)
+  //  # 1: if control + name → use Controller (React Hook Form)
   if (control && name) {
     return (
       <Controller
         name={name}
         control={control}
         render={({ field, fieldState: { error } }) => {
-          const handleChange = (value: string) => {
-            if (type === 'number') {
-              const numericValue = filteredNumber(value);
-              field.onChange(numericValue !== '' ? Number(numericValue) : '');
-            } else {
-              const stringValue = filterEnglishWords(value);
-              field.onChange(stringValue);
-            }
-          };
           return renderTextField(
             field.value ?? '',
-            handleChange,
-            error?.message, // error message into TextField
+            value => field.onChange(sanitizeInputValue(value, type)),
+            error?.message, // error message to TextField
           );
         }}
       />
     );
   }
 
-  //  Option 2: Regular usage without React Hook Form
+  //  # 2: Regular usage without React Hook Form
   if (value !== undefined && onChange) {
     return renderTextField(value, onChange);
   }

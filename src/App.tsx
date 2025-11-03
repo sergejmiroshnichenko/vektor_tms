@@ -6,7 +6,7 @@ import { ServiceLogsTable } from 'components/ServiceLogsTable.tsx';
 import { ServiceTypesFilter } from 'components/Filters/ServiceTypesFilter.tsx';
 import { DateRangeFilter } from 'components/Filters/DateRangeFilter.tsx';
 import { SearchFilter } from 'components/Filters/SearchFilter.tsx';
-import { CustomModal } from 'components/CustomModal.tsx';
+import { ServiceLogsModal } from 'components/ServiceLogsModal.tsx';
 import {
   setEditingLog,
   setModalActive,
@@ -50,7 +50,7 @@ function App() {
         <DateRangeFilter />
       </AppBar>
       <ServiceLogsTable />
-      {modalActive && <CustomModal />}
+      {modalActive && <ServiceLogsModal />}
     </Box>
   );
 }

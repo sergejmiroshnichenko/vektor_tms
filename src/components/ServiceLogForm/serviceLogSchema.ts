@@ -4,12 +4,14 @@ import dayjs from 'dayjs';
 export const serviceLogSchema = yup.object({
   provider: yup
     .string()
-    .matches(/^[A-Za-z\s]+$/, 'Provider must contain only english letters')
+    .matches(/^[A-Za-z]/, 'Provider must start with an English letter')
+    .matches(/^[A-Za-z](?!.*([.\-\s])\1)[A-Za-z0-9.\-\s]*$/, 'Invalid format')
     .required('Provider is required'),
   serviceOrder: yup
     .string()
-    .matches(/^[A-Za-z\s]+$/, 'Provider must contain only english letters')
-    .required('Service order is required'),
+    .matches(/^[A-Za-z]/, 'Service Order must start with an English letter')
+    .matches(/^[A-Za-z](?!.*([.\-\s])\1)[A-Za-z0-9.\-\s]*$/, 'Invalid format')
+    .required('Service Order is required'),
   equipment: yup
     .string()
     .oneOf(['truck', 'trailer'], 'Equipment type is required')
