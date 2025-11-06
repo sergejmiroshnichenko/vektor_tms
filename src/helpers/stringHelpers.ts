@@ -9,5 +9,8 @@ export const sanitizeInputValue = (value: string, type: string | number) => {
   if (type === 'number') {
     return value.replace(/\D/g, '').replace(/^0+(?=\d)/, '');
   }
-  return /^[A-Za-z]/.test(value) ? value : '';
+  return value
+    .replace(/[^A-Za-z0-9-\s]/g, '') // only a-z, numbers, - and space
+    .replace(/^[^A-Za-z]+/, '') // string start with english letter
+    .replace(/\s{2,}/g, ' '); // max 1 space
 };

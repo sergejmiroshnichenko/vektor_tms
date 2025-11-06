@@ -41,7 +41,7 @@ export const InputField = ({
     handleChange: (value: string) => void,
     errorMessage?: string,
   ) => {
-    const isEmpty = !fieldValue || String(fieldValue).trim() === '';
+    const isEmpty = !String(fieldValue).trim();
 
     return (
       <TextField

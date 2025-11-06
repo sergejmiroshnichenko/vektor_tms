@@ -14,7 +14,14 @@ export const serviceLogSchema = yup.object({
     .required('Service Order is required'),
   equipment: yup
     .string()
-    .oneOf(['truck', 'trailer'], 'Equipment type is required')
+    .matches(
+      /^[A-Za-z]/,
+      'Equipment must be in format: Truck-123 or Trailer-456',
+    )
+    .matches(
+      /^(Truck|Trailer)-[0-9]{3,}$/,
+      'Equipment must be in format: Truck-123 or Trailer-456',
+    )
     .required('Equipment type is required'),
   odometer: yup.number().typeError('Odometer must be a number').optional(),
   engineHours: yup

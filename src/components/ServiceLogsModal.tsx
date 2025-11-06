@@ -22,7 +22,7 @@ export const ServiceLogsModal = () => {
   };
 
   return (
-    <Dialog open={modalActive} onClose={onClose} fullWidth maxWidth="md">
+    <Dialog open={modalActive} onClose={onClose} fullWidth maxWidth="xl">
       <Box
         sx={{
           display: 'flex',

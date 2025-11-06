@@ -1,5 +1,5 @@
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
-import { MenuItem, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { ToggleButton, ToggleButtonGroup } from '@mui/material';
 import FireTruckIcon from '@mui/icons-material/FireTruck';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import { InputField } from 'components/InputField.tsx';
@@ -20,6 +20,12 @@ export const EquipmentSection = ({
 }: EquipmentSectionProps) => {
   const toggleValue = watch('equipment');
 
+  const getEquipmentType = (equipmentType: string, text?: string) => {
+    if (equipmentType?.startsWith('Truck')) return 'Truck';
+    if (equipmentType?.startsWith('Trailer')) return 'Trailer';
+    return text;
+  };
+
   return (
     <Section
       title="2.Equipment"
@@ -29,12 +35,18 @@ export const EquipmentSection = ({
         <ToggleButtonGroup
           color="primary"
           exclusive
-          value={toggleValue}
-          onChange={(_, value) =>
-            value &&
-            // ToggleButtonGroup synchronise with InputField through setValue
-            setValue('equipment', value, { shouldValidate: true })
-          }
+          value={getEquipmentType(toggleValue)}
+          onChange={(_, selected) => {
+            if (selected) {
+              setValue(
+                'equipment',
+                toggleValue.startsWith(selected) ? toggleValue : `${selected}-`,
+                {
+                  shouldValidate: true,
+                },
+              );
+            }
+          }}
           sx={{
             '& .MuiToggleButton-root': {
               textTransform: 'none',
@@ -42,11 +54,11 @@ export const EquipmentSection = ({
               height: '20px',
             },
           }}>
-          <ToggleButton value="truck" sx={{ gap: 1 }}>
+          <ToggleButton value="Truck" sx={{ gap: 1 }}>
             <FireTruckIcon sx={{ fontSize: 18 }} />
             Truck
           </ToggleButton>
-          <ToggleButton value="trailer" sx={{ gap: 1 }}>
+          <ToggleButton value="Trailer" sx={{ gap: 1 }}>
             <LocalShippingIcon sx={{ fontSize: 18 }} />
             Trailer
           </ToggleButton>
@@ -55,21 +67,12 @@ export const EquipmentSection = ({
       <InputField
         name="equipment"
         control={control}
-        label={
-          'Equipment'
-          // toggleValue
-          // ? toggleValue === 'truck'
-          //   ? 'Truck'
-          //   : 'Trailer'
-          // : 'Select type'
-        }
+        label={getEquipmentType(toggleValue, 'Select type')}
+        placeholder={getEquipmentType(toggleValue, 'Enter equipment')}
         value={toggleValue}
-        select
         required
-        sx={{ flex: 2 }}>
-        <MenuItem value="truck">Truck</MenuItem>
-        <MenuItem value="trailer">Trailer</MenuItem>
-      </InputField>
+        sx={{ flex: 2 }}
+      />
 
       <InputField
         name="odometer"
