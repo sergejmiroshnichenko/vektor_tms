@@ -9,6 +9,6 @@ export type FormValues = {
   engineHours?: number;
   dateIn: dayjs.Dayjs;
   dateOut?: dayjs.Dayjs;
-  type: ServiceTypes | '';
+  type: ServiceTypes;
   serviceDescription?: string;
 };

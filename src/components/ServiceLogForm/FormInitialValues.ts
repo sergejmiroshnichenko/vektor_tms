@@ -10,7 +10,7 @@ export const getEmptyValues = (): FormValues => ({
   engineHours: undefined,
   dateIn: dayjs(),
   dateOut: dayjs().add(1, 'day'),
-  type: '',
+  type: 'planned', // default
   serviceDescription: '',
 });
 
@@ -25,4 +25,21 @@ export const getInitialEditValues = (editingLog: IServiceLog): FormValues => ({
   engineHours: editingLog.engineHours,
   serviceDescription: editingLog.serviceDescription,
   // totalAmount: editingLog.totalAmount,
+});
+
+export const convertFormValuesToServiceLog = (
+  id: string,
+  form: FormValues,
+): IServiceLog => ({
+  id,
+  provider: form.provider,
+  serviceOrder: form.serviceOrder,
+  equipment: form.equipment,
+  odometer: form.odometer ?? 0,
+  engineHours: form.engineHours ?? 0,
+  completedDate: dayjs(form.dateIn).format('YYYY-MM-DD'),
+  type: 'planned', // default
+  serviceDescription: form.serviceDescription ?? '',
+  driver: '',
+  totalAmount: 0,
 });
