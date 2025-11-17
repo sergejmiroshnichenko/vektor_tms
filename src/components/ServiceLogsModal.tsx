@@ -11,7 +11,8 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useAppDispatch, useAppSelector } from 'hooks/redux-hooks.ts';
 import { setModalActive } from 'store/slices/serviceLogsSlice.ts';
 import { ServiceLogForm } from 'components/ServiceLogForm/ServiceLogForm.tsx';
-import { DraftList } from 'components/Draft/DraftList.tsx';
+import { DraftList } from 'components/DraftTabs/DraftList.tsx';
+import { clearAllDrafts, deleteActiveDraft } from 'store/slices/draftsSlice.ts';
 
 export const ServiceLogsModal = () => {
   const { modalActive, editingLog } = useAppSelector(
@@ -54,8 +55,14 @@ export const ServiceLogsModal = () => {
           <Button onClick={onClose}>Close</Button>
           {!editingLog && (
             <>
-              <Button variant="text">Delete draft</Button>
-              <Button variant="text">Clear all drafts</Button>
+              <Button
+                variant="text"
+                onClick={() => dispatch(deleteActiveDraft(activeDraftId))}>
+                Delete draft
+              </Button>
+              <Button variant="text" onClick={() => dispatch(clearAllDrafts())}>
+                Clear all drafts
+              </Button>
             </>
           )}
         </DialogActions>

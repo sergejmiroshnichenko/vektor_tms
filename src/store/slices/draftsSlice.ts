@@ -20,7 +20,8 @@ const draftsSlice = createSlice({
   reducers: {
     addDraft: (state, action: PayloadAction<{ draft: FormValues }>) => {
       const newDraft: IDraftTypes = {
-        id: String(state.draftsList.length + 1),
+        // id: String(state.draftsList.length + 1),
+        id: dayjs().valueOf().toString(),
         createdAt: dayjs(),
         status: 'saving',
         draft: action.payload.draft,
@@ -46,7 +47,7 @@ const draftsSlice = createSlice({
           return {
             ...item,
             draft: convertData,
-            isCompleted: !item.isCompleted,
+            isCompleted: true,
             status: 'saved',
             updatedAt: dayjs(),
           };
@@ -55,12 +56,34 @@ const draftsSlice = createSlice({
       });
     },
     setActiveDraftId: (state, action: PayloadAction<string>) => {
-      console.log('action payload >>', action.payload);
       state.activeDraftId = action.payload;
+    },
+    clearAllDrafts: state => {
+      state.draftsList = [];
+      state.activeDraftId = '';
+    },
+    deleteActiveDraft: (state, action: PayloadAction<string>) => {
+      state.draftsList = state.draftsList.filter(
+        draft => draft.id !== action.payload,
+      );
+      if (state.draftsList.length === 0) {
+        state.activeDraftId = '';
+      } else if (state.draftsList.length === 1) {
+        state.activeDraftId = state.draftsList[0].id;
+      } else {
+        state.activeDraftId = String(
+          state.draftsList[state.draftsList.length - 1].id,
+        );
+      }
     },
   },
 });
 
-export const { addDraft, completedDraft, setActiveDraftId } =
-  draftsSlice.actions;
+export const {
+  addDraft,
+  completedDraft,
+  setActiveDraftId,
+  clearAllDrafts,
+  deleteActiveDraft,
+} = draftsSlice.actions;
 export default draftsSlice.reducer;

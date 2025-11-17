@@ -1,5 +1,5 @@
 import { Resolver, useForm } from 'react-hook-form';
-import { IServiceLog, ServiceTypes } from 'types/IServiceLog.ts';
+import { ServiceTypes } from 'types/IServiceLog.ts';
 import { FormValues } from 'components/ServiceLogForm/FormValues.types.ts';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { serviceLogSchema } from 'components/ServiceLogForm/serviceLogSchema.ts';
@@ -16,7 +16,7 @@ import { completedDraft } from 'store/slices/draftsSlice.ts';
 
 export const ServiceLogForm = () => {
   const { editingLog } = useAppSelector(state => state.serviceLogs);
-  const { draftsList } = useAppSelector(state => state.serviceDrafts);
+  const { activeDraftId } = useAppSelector(state => state.serviceDrafts);
 
   const dispatch = useAppDispatch();
 
@@ -45,16 +45,16 @@ export const ServiceLogForm = () => {
     };
 
     if (!editingLog) {
-      const newLog: IServiceLog = {
-        // id: String(logs.length + 1),
-        id: String(draftsList.length),
-        driver: '',
-        totalAmount: 0,
-        ...commonLogFields,
-      };
+      // const newLog: IServiceLog = {
+      //   // id: String(logs.length + 1),
+      //   id: String(draftsList.length),
+      //   driver: '',
+      //   totalAmount: 0,
+      //   ...commonLogFields,
+      // };
       // dispatch(addNewLog(newLog));
       // dispatch(addDraft({ draft: newLog }));
-      dispatch(completedDraft({ id: newLog.id, draft: data }));
+      dispatch(completedDraft({ id: activeDraftId, draft: data }));
       // dispatch(setModalActive(false));
     } else {
       const updatedLog = {
