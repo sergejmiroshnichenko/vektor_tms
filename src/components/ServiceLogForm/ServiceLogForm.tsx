@@ -12,23 +12,64 @@ import { useAppDispatch, useAppSelector } from 'hooks/redux-hooks.ts';
 import { EquipmentSection } from 'components/ServiceLogForm/FormSections/EquipmentSection.tsx';
 import { ProviderSection } from 'components/ServiceLogForm/FormSections/ProviderSection.tsx';
 import { ServiceDetailsSection } from 'components/ServiceLogForm/FormSections/ServiceDetailsSection.tsx';
-import { completedDraft } from 'store/slices/draftsSlice.ts';
+import { autoSavingDraft, completedDraft } from 'store/slices/draftsSlice.ts';
+import { useEffect } from 'react';
 
 export const ServiceLogForm = () => {
   const { editingLog } = useAppSelector(state => state.serviceLogs);
-  const { activeDraftId } = useAppSelector(state => state.serviceDrafts);
+  const { activeDraftId, draftsList } = useAppSelector(
+    state => state.serviceDrafts,
+  );
 
   const dispatch = useAppDispatch();
 
-  const { control, watch, setValue, handleSubmit } = useForm<FormValues>({
-    mode: 'onChange',
-    reValidateMode: 'onChange',
-    resolver: yupResolver(serviceLogSchema) as Resolver<FormValues>,
-    defaultValues: editingLog
-      ? getInitialEditValues(editingLog)
-      : getEmptyValues(),
-    // getEmptyServiceLog(),
-  });
+  const { control, watch, setValue, handleSubmit, reset } = useForm<FormValues>(
+    {
+      mode: 'onChange',
+      reValidateMode: 'onChange',
+      resolver: yupResolver(serviceLogSchema) as Resolver<FormValues>,
+      defaultValues: editingLog
+        ? getInitialEditValues(editingLog)
+        : getEmptyValues(),
+    },
+  );
+
+  useEffect(() => {
+    const activeDraft = draftsList.find(draft => draft.id === activeDraftId);
+
+    if (editingLog) {
+      return reset(getInitialEditValues(editingLog));
+    }
+    if (activeDraft) {
+      reset(activeDraft.draft);
+    } else {
+      reset(getEmptyValues());
+    }
+  }, [activeDraftId, editingLog]);
+
+  useEffect(() => {
+    if (!activeDraftId) return;
+
+    let timer: ReturnType<typeof setTimeout>;
+
+    // subscribe on change fields form
+    const subscription = watch(values => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        dispatch(
+          autoSavingDraft({
+            id: activeDraftId,
+            draft: values as FormValues,
+          }),
+        );
+      }, 400);
+    });
+
+    return () => {
+      clearTimeout(timer);
+      subscription.unsubscribe();
+    };
+  }, [activeDraftId, dispatch, watch]);
 
   const onSubmit = (data: FormValues) => {
     console.log('Form data', data);
@@ -45,17 +86,7 @@ export const ServiceLogForm = () => {
     };
 
     if (!editingLog) {
-      // const newLog: IServiceLog = {
-      //   // id: String(logs.length + 1),
-      //   id: String(draftsList.length),
-      //   driver: '',
-      //   totalAmount: 0,
-      //   ...commonLogFields,
-      // };
-      // dispatch(addNewLog(newLog));
-      // dispatch(addDraft({ draft: newLog }));
       dispatch(completedDraft({ id: activeDraftId, draft: data }));
-      // dispatch(setModalActive(false));
     } else {
       const updatedLog = {
         ...editingLog,

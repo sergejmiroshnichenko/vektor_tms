@@ -5,10 +5,10 @@ export type FormValues = {
   provider: string;
   serviceOrder: string;
   equipment: string;
-  odometer?: number;
-  engineHours?: number;
+  odometer: number | undefined;
+  engineHours: number | undefined;
   dateIn: dayjs.Dayjs;
-  dateOut?: dayjs.Dayjs;
+  dateOut: dayjs.Dayjs | null;
   type: ServiceTypes;
-  serviceDescription?: string;
+  serviceDescription: string | null;
 };

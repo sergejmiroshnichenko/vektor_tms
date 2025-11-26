@@ -20,10 +20,9 @@ const draftsSlice = createSlice({
   reducers: {
     addDraft: (state, action: PayloadAction<{ draft: FormValues }>) => {
       const newDraft: IDraftTypes = {
-        // id: String(state.draftsList.length + 1),
         id: dayjs().valueOf().toString(),
-        createdAt: dayjs(),
-        status: 'saving',
+        createdAt: dayjs().toISOString(),
+        status: 'idle',
         draft: action.payload.draft,
         isCompleted: false,
       };
@@ -33,47 +32,63 @@ const draftsSlice = createSlice({
         state.activeDraftId = newDraft.id; // create activeDraftId
       }
     },
+
+    autoSavingDraft: (
+      state,
+      action: PayloadAction<{ id: string; draft: FormValues }>,
+    ) => {
+      state.draftsList = state.draftsList.map(item => {
+        if (item.id !== action.payload.id) return item;
+
+        return {
+          ...item,
+          draft: { ...item.draft, ...action.payload.draft },
+          status: 'saving',
+        };
+      });
+    },
+
     completedDraft: (
       state,
       action: PayloadAction<{ id: string; draft: FormValues }>,
     ) => {
       state.draftsList = state.draftsList.map(item => {
-        if (item.id === action.payload.id) {
-          const convertData = convertFormValuesToServiceLog(
+        if (item.id !== action.payload.id) return item;
+
+        return {
+          ...item,
+          isCompleted: true,
+          status: 'saved',
+          updatedAt: dayjs(),
+          completedData: convertFormValuesToServiceLog(
             item.id,
             action.payload.draft,
-          );
-          console.log('convertData', convertData);
-          return {
-            ...item,
-            draft: convertData,
-            isCompleted: true,
-            status: 'saved',
-            updatedAt: dayjs(),
-          };
-        }
-        return item;
+          ),
+        };
       });
     },
+
     setActiveDraftId: (state, action: PayloadAction<string>) => {
-      state.activeDraftId = action.payload;
+      state.activeDraftId = String(action.payload);
     },
     clearAllDrafts: state => {
       state.draftsList = [];
       state.activeDraftId = '';
     },
     deleteActiveDraft: (state, action: PayloadAction<string>) => {
-      state.draftsList = state.draftsList.filter(
-        draft => draft.id !== action.payload,
+      const index = state.draftsList.findIndex(
+        draft => draft.id === action.payload,
       );
-      if (state.draftsList.length === 0) {
+
+      if (index === -1) return;
+      state.draftsList.splice(index, 1);
+
+      if (!state.draftsList.length) {
         state.activeDraftId = '';
-      } else if (state.draftsList.length === 1) {
-        state.activeDraftId = state.draftsList[0].id;
+      } else if (index >= state.draftsList.length) {
+        state.activeDraftId = state.draftsList[state.draftsList.length - 1].id;
       } else {
-        state.activeDraftId = String(
-          state.draftsList[state.draftsList.length - 1].id,
-        );
+        state.activeDraftId = state.draftsList[index].id;
       }
     },
   },
@@ -81,6 +96,7 @@ const draftsSlice = createSlice({
 
 export const {
   addDraft,
+  autoSavingDraft,
   completedDraft,
   setActiveDraftId,
   clearAllDrafts,

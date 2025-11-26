@@ -21,6 +21,7 @@ export const getInitialEditValues = (editingLog: IServiceLog): FormValues => ({
   // driver: editingLog.driver,
   type: editingLog.type,
   dateIn: dayjs(editingLog.completedDate),
+  dateOut: null,
   odometer: editingLog.odometer,
   engineHours: editingLog.engineHours,
   serviceDescription: editingLog.serviceDescription,
