@@ -12,7 +12,11 @@ import { useAppDispatch, useAppSelector } from 'hooks/redux-hooks.ts';
 import { EquipmentSection } from 'components/ServiceLogForm/FormSections/EquipmentSection.tsx';
 import { ProviderSection } from 'components/ServiceLogForm/FormSections/ProviderSection.tsx';
 import { ServiceDetailsSection } from 'components/ServiceLogForm/FormSections/ServiceDetailsSection.tsx';
-import { autoSavingDraft, completedDraft } from 'store/slices/draftsSlice.ts';
+import {
+  autoSavingDraft,
+  completedDraft,
+  setEditingStatus,
+} from 'store/slices/draftsSlice.ts';
 import { useEffect } from 'react';
 
 export const ServiceLogForm = () => {
@@ -54,7 +58,15 @@ export const ServiceLogForm = () => {
 
     // subscribe on change fields form
     const subscription = watch(values => {
+      const skipKeys = ['type', 'dateIn', 'dateOut'];
+
+      Object.entries(values).some(([key, value]) => {
+        if (!skipKeys.includes(key) && value) {
+          dispatch(setEditingStatus({ id: activeDraftId }));
+        }
+      });
       clearTimeout(timer);
+
       timer = setTimeout(() => {
         dispatch(
           autoSavingDraft({

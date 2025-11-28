@@ -33,6 +33,12 @@ const draftsSlice = createSlice({
       }
     },
 
+    setEditingStatus: (state, action: PayloadAction<{ id: string }>) => {
+      state.draftsList = state.draftsList.map(item =>
+        item.id === action.payload.id ? { ...item, status: 'editing' } : item,
+      );
+    },
+
     autoSavingDraft: (
       state,
       action: PayloadAction<{ id: string; draft: FormValues }>,
@@ -96,6 +102,7 @@ const draftsSlice = createSlice({
 
 export const {
   addDraft,
+  setEditingStatus,
   autoSavingDraft,
   completedDraft,
   setActiveDraftId,

@@ -1,5 +1,12 @@
 import { useAppDispatch, useAppSelector } from 'hooks/redux-hooks.ts';
-import { Box, Skeleton, Tab, Tabs, Tooltip, Typography } from '@mui/material';
+import {
+  Box,
+  LinearProgress,
+  Tab,
+  Tabs,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { IDraftTypes } from 'types/IDraft.types.ts';
 import {
@@ -22,6 +29,29 @@ export const DraftList = () => {
 
   const getTabBg = (draft: IDraftTypes) =>
     draft.isCompleted ? '#f5f5f5' : 'white';
+
+  const renderBadge = (draft: IDraftTypes) => {
+    const isActive = draft.id === activeDraftId;
+
+    if (!draft.isCompleted) {
+      if (isActive && draft.status === 'editing') {
+        return (
+          <Box>
+            <LinearProgress
+              sx={{
+                height: 8,
+                borderRadius: 2,
+                width: 20,
+              }}
+            />
+          </Box>
+        );
+      }
+      return <Box sx={styles.newBadge}>NEW</Box>;
+    }
+    // Completed → checkmark
+    return '✔️';
+  };
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -47,27 +77,17 @@ export const DraftList = () => {
                     sx={{
                       ...styles.titleRow,
                     }}>
-                    {!draft.isCompleted && (
-                      <Box sx={{ ...styles.newBadge }}>NEW</Box>
-                    )}
+                    {/*{draft.id === activeDraftId && draft.status === 'editing'*/}
+                    {/*  ? 'ANIMATION'*/}
+                    {/*  : !draft.isCompleted && (*/}
+                    {/*      <Box sx={{ ...styles.newBadge }}>NEW</Box>*/}
+                    {/*    )}*/}
+                    {renderBadge(draft)}
                     <Typography
                       sx={{
                         fontSize: '15px',
                       }}>
-                      {draft.status === 'saving' ? (
-                        <div>
-                          <Skeleton
-                            variant="circular"
-                            width={10}
-                            height={10}
-                            animation="pulse"
-                            sx={{ background: 'rgba(76, 175, 80, 0.4)' }}
-                          />{' '}
-                          `${draft.draft.serviceOrder}`
-                        </div>
-                      ) : (
-                        'New Draft'
-                      )}
+                      {draft.draft.serviceOrder || 'New Draft'}
                     </Typography>
                   </Box>
                   <Box

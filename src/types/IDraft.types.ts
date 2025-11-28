@@ -4,7 +4,7 @@ import { IServiceLog } from 'types/IServiceLog.ts';
 
 export interface IDraftTypes {
   id: string;
-  status: 'idle' | 'saving' | 'saved';
+  status: 'idle' | 'editing' | 'saving' | 'saved';
   draft: FormValues;
   completedData?: IServiceLog;
   createdAt: string;
