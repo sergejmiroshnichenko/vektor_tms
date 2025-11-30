@@ -27,7 +27,7 @@ export const SERVICE_LOGS_COLUMN_WIDTHS: Partial<
   provider: 150,
   serviceOrder: 110,
   serviceDescription: 210,
-  totalAmount: 120,
+  totalAmount: 115,
   odometer: 110,
   engineHours: 110,
 };

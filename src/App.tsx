@@ -2,7 +2,7 @@ import './App.css';
 import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import ConstructionIcon from '@mui/icons-material/Construction';
-import { ServiceLogsTable } from 'components/ServiceLogsTable.tsx';
+import { ServiceLogsTable } from 'components/ServiceLogsTable/ServiceLogsTable.tsx';
 import { ServiceTypesFilter } from 'components/Filters/ServiceTypesFilter.tsx';
 import { DateRangeFilter } from 'components/Filters/DateRangeFilter.tsx';
 import { SearchFilter } from 'components/Filters/SearchFilter.tsx';

@@ -25,6 +25,7 @@ import { HEADERS, SERVICE_LOGS_COLUMN_WIDTHS } from 'constants/serviceTypes.ts';
 import { IServiceLog, ServiceTypes } from 'types/IServiceLog.ts';
 import { HighlightTextParts } from 'components/HighlightTextParts.tsx';
 import dayjs from 'dayjs';
+import { ServiceLogsFooter } from 'components/ServiceLogsTable/ServiceLogsFooter.tsx';
 
 export const ServiceLogsTable = () => {
   const dispatch = useAppDispatch();
@@ -162,7 +163,7 @@ export const ServiceLogsTable = () => {
     );
 
   return (
-    <Paper sx={{ height: 500, width: '100%' }}>
+    <Paper sx={{ height: '570px', width: '100%' }}>
       <DataGrid
         rows={filteredPaginatedLogs}
         columns={columns}
@@ -179,6 +180,9 @@ export const ServiceLogsTable = () => {
             display: 'flex',
             alignItems: 'center',
           },
+        }}
+        slots={{
+          footer: ServiceLogsFooter,
         }}
         disableRowSelectionOnClick
         pageSizeOptions={[10, 20, 50]}
