@@ -64,7 +64,6 @@ export const DraftList = () => {
         {draftsList.map((draft: IDraftTypes) => {
           return (
             <Tab
-              component="div"
               key={draft.id}
               value={draft.id}
               sx={{
@@ -77,11 +76,6 @@ export const DraftList = () => {
                     sx={{
                       ...styles.titleRow,
                     }}>
-                    {/*{draft.id === activeDraftId && draft.status === 'editing'*/}
-                    {/*  ? 'ANIMATION'*/}
-                    {/*  : !draft.isCompleted && (*/}
-                    {/*      <Box sx={{ ...styles.newBadge }}>NEW</Box>*/}
-                    {/*    )}*/}
                     {renderBadge(draft)}
                     <Typography
                       sx={{
@@ -91,7 +85,6 @@ export const DraftList = () => {
                     </Typography>
                   </Box>
                   <Box
-                    component="span"
                     sx={{
                       ...styles.closeIcon,
                     }}
@@ -99,7 +92,7 @@ export const DraftList = () => {
                       e.stopPropagation();
                       dispatch(deleteActiveDraft(draft.id));
                     }}>
-                    <ClearIcon sx={{ fontSize: '18px' }} />
+                    <ClearIcon sx={{ fontSize: '16px' }} />
                   </Box>
                 </Box>
               }
@@ -116,12 +109,12 @@ export const DraftList = () => {
             onClick={() => {
               dispatch(addDraft({ draft: getEmptyValues() }));
             }}
-            label={
-              <AddOutlinedIcon color={disableAdd ? 'disabled' : 'primary'} />
-            }
             sx={{
               ...styles.addIcon,
             }}
+            label={
+              <AddOutlinedIcon color={disableAdd ? 'disabled' : 'primary'} />
+            }
           />
         </span>
       </Tooltip>

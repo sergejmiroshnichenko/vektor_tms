@@ -6,6 +6,7 @@ import { InputField } from 'components/InputField.tsx';
 import { Section } from 'components/Section.tsx';
 import { Control, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import { FormValues } from 'components/ServiceLogForm/FormValues.types.ts';
+import { useRef } from 'react';
 
 interface EquipmentSectionProps {
   control: Control<FormValues>;
@@ -19,6 +20,8 @@ export const EquipmentSection = ({
   watch,
 }: EquipmentSectionProps) => {
   const toggleValue = watch('equipment');
+
+  const equipmentInputRef = useRef<HTMLInputElement | null>(null);
 
   const getEquipmentType = (equipmentType: string, text?: string) => {
     if (equipmentType?.startsWith('Truck')) return 'Truck';
@@ -45,6 +48,9 @@ export const EquipmentSection = ({
                   shouldValidate: true,
                 },
               );
+              setTimeout(() => {
+                equipmentInputRef.current?.focus();
+              }, 0);
             }
           }}
           sx={{
@@ -67,6 +73,7 @@ export const EquipmentSection = ({
       <InputField
         name="equipment"
         control={control}
+        inputRef={equipmentInputRef}
         label={getEquipmentType(toggleValue, 'Select type')}
         placeholder={getEquipmentType(toggleValue, 'Enter equipment')}
         value={toggleValue}

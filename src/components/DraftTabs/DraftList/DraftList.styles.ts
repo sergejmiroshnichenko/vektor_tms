@@ -10,9 +10,6 @@ export const styles = {
     textTransform: 'none',
     pt: 0,
     transition: '0.3s ease',
-    '&:hover': {
-      transform: 'scale(1.03)',
-    },
   },
   newBadge: {
     background: 'black',
@@ -26,29 +23,39 @@ export const styles = {
     display: 'flex',
     alignItems: 'center',
     gap: '5px',
+    transition: '0.3s ease',
+    '&:hover': {
+      transform: 'scale(1.03)',
+    },
   },
   closeIcon: {
     position: 'absolute',
     right: 0,
     top: 0,
-    p: 0,
+    p: 0.3,
     transition: '0.2s',
+    borderRadius: '50%',
+    opacity: 0.8,
     '&:hover': {
-      transform: 'scale(1.1)',
+      backgroundColor: 'rgba(0,0,0,0.07)',
       opacity: 1,
     },
   },
   addIcon: {
-    minWidth: 48,
-    width: 48,
+    minWidth: 28,
+    width: 28,
     padding: 0,
-    transition: '0.3s ease',
+    minHeight: 28,
+    ml: 0.5,
+    borderRadius: '50%',
+    transition: '0.2s ease',
     opacity: 1,
     '&:hover': {
-      /**/
+      backgroundColor: 'rgba(0,0,0,0.07)',
     },
     '&.Mui-disabled': {
-      opacity: 0.8,
+      opacity: 0.6,
     },
+    '& .MuiTouchRipple-root': { display: 'none' },
   },
 };

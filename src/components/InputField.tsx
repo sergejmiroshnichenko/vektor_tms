@@ -1,7 +1,7 @@
 import { InputAdornment, TextField } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { Control, Controller } from 'react-hook-form';
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import { sanitizeInputValue } from 'helpers/stringHelpers.ts';
 
 interface InputFieldProps {
@@ -19,6 +19,7 @@ interface InputFieldProps {
   type?: 'string' | 'number';
   children?: ReactNode;
   sx?: object;
+  inputRef?: React.RefObject<HTMLInputElement | null>;
 }
 
 export const InputField = ({
@@ -35,10 +36,14 @@ export const InputField = ({
   type = 'string', //default
   children,
   sx = {},
+  inputRef,
 }: InputFieldProps) => {
+  // const inputRef = useRef<HTMLInputElement | null>(null);
+
   const renderTextField = (
     fieldValue: string | number,
     handleChange: (value: string) => void,
+    ref?: React.RefObject<HTMLInputElement | null>,
     errorMessage?: string,
   ) => {
     const isEmpty = !String(fieldValue).trim();
@@ -57,6 +62,7 @@ export const InputField = ({
         variant="outlined"
         error={!!errorMessage}
         helperText={errorMessage}
+        inputRef={ref}
         sx={{
           '& .MuiInputBase-root': {
             borderRadius: 2,
@@ -99,6 +105,7 @@ export const InputField = ({
           return renderTextField(
             field.value ?? '',
             value => field.onChange(sanitizeInputValue(value, type)),
+            inputRef,
             error?.message, // error message to TextField
           );
         }}
@@ -108,6 +115,6 @@ export const InputField = ({
 
   //  # 2: Regular usage without React Hook Form
   if (value !== undefined && onChange) {
-    return renderTextField(value, onChange);
+    return renderTextField(value, onChange, inputRef);
   }
 };
