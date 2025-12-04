@@ -12,5 +12,13 @@ export const sanitizeInputValue = (value: string, type: string | number) => {
   return value
     .replace(/[^A-Za-z0-9-\s]/g, '') // only a-z, numbers, - and space
     .replace(/^[^A-Za-z]+/, '') // string start with english letter
-    .replace(/\s{2,}/g, ' '); // max 1 space
+    .replace(/\s{2,}/g, ' ') // max 1 space
+    .slice(0, 21);
+};
+
+export const truncateServiceOrder = (value: string) => {
+  if (value.length > 10) {
+    return value.slice(0, 10) + '...';
+  }
+  return value;
 };

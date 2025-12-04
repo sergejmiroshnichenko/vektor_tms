@@ -10,6 +10,7 @@ export const serviceLogSchema = yup.object({
   serviceOrder: yup
     .string()
     .matches(/^[A-Za-z]/, 'Service Order must start with an English letter')
+    .max(20)
     .matches(/^[A-Za-z](?!.*([.\-\s])\1)[A-Za-z0-9.\-\s]*$/, 'Invalid format')
     .required('Service Order is required'),
   equipment: yup

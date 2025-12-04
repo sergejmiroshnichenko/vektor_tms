@@ -17,6 +17,7 @@ import {
 import ClearIcon from '@mui/icons-material/Clear';
 import { getEmptyValues } from 'components/ServiceLogForm/FormInitialValues.ts';
 import { styles } from './DraftList.styles.ts';
+import { truncateServiceOrder } from 'helpers/stringHelpers.ts';
 
 export const DraftList = () => {
   const { draftsList, activeDraftId } = useAppSelector(
@@ -49,18 +50,14 @@ export const DraftList = () => {
       }
       return <Box sx={styles.newBadge}>NEW</Box>;
     }
-    // Completed → checkmark
-    return '✔️';
+    return '✔️'; // check ==> isCompleted
   };
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
       <Tabs
         value={activeDraftId}
-        onChange={(_, newValue) => dispatch(setActiveDraftId(newValue))}
-        sx={{
-          ...styles.tabs,
-        }}>
+        onChange={(_, newValue) => dispatch(setActiveDraftId(newValue))}>
         {draftsList.map((draft: IDraftTypes) => {
           return (
             <Tab
@@ -81,7 +78,8 @@ export const DraftList = () => {
                       sx={{
                         fontSize: '15px',
                       }}>
-                      {draft.draft.serviceOrder || 'New Draft'}
+                      {truncateServiceOrder(draft.draft.serviceOrder) ||
+                        'New Draft'}
                     </Typography>
                   </Box>
                   <Box
@@ -101,7 +99,7 @@ export const DraftList = () => {
         })}
       </Tabs>
       <Tooltip
-        title={disableAdd ? 'Please, complete the current draft' : ''}
+        title={disableAdd && 'Please, complete the current draft'}
         disableHoverListener={!disableAdd}>
         <span>
           <Tab

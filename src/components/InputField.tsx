@@ -38,8 +38,6 @@ export const InputField = ({
   sx = {},
   inputRef,
 }: InputFieldProps) => {
-  // const inputRef = useRef<HTMLInputElement | null>(null);
-
   const renderTextField = (
     fieldValue: string | number,
     handleChange: (value: string) => void,

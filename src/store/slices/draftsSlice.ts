@@ -41,10 +41,18 @@ const draftsSlice = createSlice({
 
     autoSavingDraft: (
       state,
-      action: PayloadAction<{ id: string; draft: FormValues }>,
+      action: PayloadAction<{
+        id: string;
+        draft: FormValues;
+        isChanged: boolean;
+      }>,
     ) => {
       state.draftsList = state.draftsList.map(item => {
         if (item.id !== action.payload.id) return item;
+
+        if (item.isCompleted && action.payload.isChanged) {
+          item.isCompleted = false;
+        }
 
         return {
           ...item,

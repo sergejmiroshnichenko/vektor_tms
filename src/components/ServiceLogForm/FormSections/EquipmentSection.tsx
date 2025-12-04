@@ -39,7 +39,7 @@ export const EquipmentSection = ({
           color="primary"
           exclusive
           value={getEquipmentType(toggleValue)}
-          onChange={(_, selected) => {
+          onChange={(_, selected: 'Truck' | 'Trailer' | null) => {
             if (selected) {
               setValue(
                 'equipment',

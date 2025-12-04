@@ -38,9 +38,9 @@ export const ServiceLogForm = () => {
     },
   );
 
-  useEffect(() => {
-    const activeDraft = draftsList.find(draft => draft.id === activeDraftId);
+  const activeDraft = draftsList.find(draft => draft.id === activeDraftId);
 
+  useEffect(() => {
     if (editingLog) {
       return reset(getInitialEditValues(editingLog));
     }
@@ -58,6 +58,9 @@ export const ServiceLogForm = () => {
 
     // subscribe on change fields form
     const subscription = watch(values => {
+      const isActuallyChanged =
+        JSON.stringify(values) !== JSON.stringify(activeDraft?.draft); // should be 'false',then if click on the another draft.isCompleted
+
       const skipKeys = ['type', 'dateIn', 'dateOut'];
 
       Object.entries(values).some(([key, value]) => {
@@ -72,6 +75,7 @@ export const ServiceLogForm = () => {
           autoSavingDraft({
             id: activeDraftId,
             draft: values as FormValues,
+            isChanged: isActuallyChanged,
           }),
         );
       }, 400);

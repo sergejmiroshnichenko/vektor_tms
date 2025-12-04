@@ -1,15 +1,17 @@
 export const styles = {
-  tabs: {
-    background: '#ccc',
-    border: '1px solid lightgrey',
-    height: '50px',
-  },
   tab: {
+    border: '1px solid lightgrey',
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
     position: 'relative',
-    width: '150px',
+    // minWidth: '120px',
+    // maxWidth: { xs: 120, sm: 150, md: 200 },
     textTransform: 'none',
     pt: 0,
     transition: '0.3s ease',
+    '&:hover': {
+      backgroundColor: '#eeeeee',
+    },
   },
   newBadge: {
     background: 'black',
@@ -23,10 +25,10 @@ export const styles = {
     display: 'flex',
     alignItems: 'center',
     gap: '5px',
-    transition: '0.3s ease',
-    '&:hover': {
-      transform: 'scale(1.03)',
-    },
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    maxWidth: '100%',
   },
   closeIcon: {
     position: 'absolute',
