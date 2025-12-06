@@ -1,6 +1,7 @@
 import { Box, Button, Typography } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CheckIcon from '@mui/icons-material/Check';
 import { useAppDispatch, useAppSelector } from 'hooks/redux-hooks.ts';
 import { clearAllDrafts, deleteActiveDraft } from 'store/slices/draftsSlice.ts';
 import { setModalActive } from 'store/slices/serviceLogsSlice.ts';
@@ -74,7 +75,14 @@ export const DraftActions = () => {
           form="service-log-form"
           variant="contained"
           size="small">
-          {isActiveSavedDraft ? 'SUBMIT DRAFT' : 'SAVE'}
+          {isActiveSavedDraft ? (
+            <div>
+              <CheckIcon color="warning" />
+              <span>SUBMIT DRAFT</span>
+            </div>
+          ) : (
+            'SAVE'
+          )}
         </Button>
       </Box>
     </div>

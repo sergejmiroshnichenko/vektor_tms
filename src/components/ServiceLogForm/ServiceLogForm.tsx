@@ -27,29 +27,31 @@ export const ServiceLogForm = () => {
 
   const dispatch = useAppDispatch();
 
-  const { control, watch, setValue, handleSubmit, reset } = useForm<FormValues>(
-    {
-      mode: 'onChange',
-      reValidateMode: 'onChange',
-      resolver: yupResolver(serviceLogSchema) as Resolver<FormValues>,
-      defaultValues: editingLog
-        ? getInitialEditValues(editingLog)
-        : getEmptyValues(),
-    },
-  );
+  const { control, watch, setValue, handleSubmit } = useForm<FormValues>({
+    mode: 'onChange',
+    reValidateMode: 'onChange',
+    resolver: yupResolver(serviceLogSchema) as Resolver<FormValues>,
+    defaultValues: editingLog
+      ? getInitialEditValues(editingLog)
+      : getEmptyValues(),
+  });
 
   const activeDraft = draftsList.find(draft => draft.id === activeDraftId);
 
-  useEffect(() => {
-    if (editingLog) {
-      return reset(getInitialEditValues(editingLog));
-    }
-    if (activeDraft) {
-      reset(activeDraft.draft);
-    } else {
-      reset(getEmptyValues());
-    }
-  }, [activeDraftId, editingLog]);
+  // useEffect(() => {
+  //   // if (!modalActive) {
+  //   //   reset(getEmptyValues());
+  //   // }
+  //
+  //   if (editingLog) {
+  //     return reset(getInitialEditValues(editingLog));
+  //   }
+  //   if (activeDraft) {
+  //     reset(activeDraft.draft);
+  //   } else {
+  //     reset(getEmptyValues());
+  //   }
+  // }, [activeDraftId, editingLog, reset]);
 
   useEffect(() => {
     if (!activeDraftId) return;
@@ -59,6 +61,7 @@ export const ServiceLogForm = () => {
     // subscribe on change fields form
     const subscription = watch(values => {
       const isActuallyChanged =
+        // reset (Submit draft => Save), if there were changes in the form fields
         JSON.stringify(values) !== JSON.stringify(activeDraft?.draft); // should be 'false',then if click on the another draft.isCompleted
 
       const skipKeys = ['type', 'dateIn', 'dateOut'];

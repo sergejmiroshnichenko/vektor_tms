@@ -42,7 +42,8 @@ export const ServiceLogsModal = () => {
 
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <DialogContent sx={{ background: '#f5f5f5' }}>
-          <ServiceLogForm key={activeDraftId} />
+          {/* choice : form_mode=edit log / form_mode=add draft */}
+          <ServiceLogForm key={editingLog ? editingLog.id : activeDraftId} />
         </DialogContent>
       </Box>
     </Dialog>

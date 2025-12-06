@@ -50,9 +50,10 @@ const draftsSlice = createSlice({
       state.draftsList = state.draftsList.map(item => {
         if (item.id !== action.payload.id) return item;
 
+        // update draft state to switch SUBMIT → SAVE (true => false) when editing completed draft
         if (item.isCompleted && action.payload.isChanged) {
           item.isCompleted = false;
-        }
+        } //
 
         return {
           ...item,
