@@ -18,13 +18,13 @@ export const getInitialEditValues = (editingLog: IServiceLog): FormValues => ({
   provider: editingLog.provider,
   serviceOrder: editingLog.serviceOrder,
   equipment: editingLog.equipment,
-  // driver: editingLog.driver,
   type: editingLog.type,
   dateIn: dayjs(editingLog.completedDate),
   dateOut: null,
   odometer: editingLog.odometer,
   engineHours: editingLog.engineHours,
   serviceDescription: editingLog.serviceDescription,
+  // driver: editingLog.driver,
   // totalAmount: editingLog.totalAmount,
 });
 

@@ -1,8 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IDraftTypes } from 'types/IDraft.types.ts';
 import dayjs from 'dayjs';
-import { FormValues } from 'components/ServiceLogForm/FormValues.types.ts';
+import { DraftForm } from 'components/ServiceLogForm/FormValues.types.ts';
 import { convertFormValuesToServiceLog } from 'components/ServiceLogForm/FormInitialValues.ts';
+import { fromDraftForm } from 'helpers/formatters.ts';
 
 interface initialStateProps {
   draftsList: IDraftTypes[];
@@ -18,10 +19,10 @@ const draftsSlice = createSlice({
   name: 'serviceDrafts',
   initialState,
   reducers: {
-    addDraft: (state, action: PayloadAction<{ draft: FormValues }>) => {
+    addDraft: (state, action: PayloadAction<{ draft: DraftForm }>) => {
       const newDraft: IDraftTypes = {
         id: dayjs().valueOf().toString(),
-        createdAt: dayjs().toISOString(),
+        createdAt: dayjs().format('YYYY-MM-DD HH:mm:ss'),
         status: 'idle',
         draft: action.payload.draft,
         isCompleted: false,
@@ -34,16 +35,19 @@ const draftsSlice = createSlice({
     },
 
     setEditingStatus: (state, action: PayloadAction<{ id: string }>) => {
-      state.draftsList = state.draftsList.map(item =>
-        item.id === action.payload.id ? { ...item, status: 'editing' } : item,
+      const index = state.draftsList.findIndex(
+        draft => draft.id === action.payload.id,
       );
+      if (index !== -1) {
+        state.draftsList[index].status = 'editing';
+      }
     },
 
     autoSavingDraft: (
       state,
       action: PayloadAction<{
         id: string;
-        draft: FormValues;
+        draft: DraftForm;
         isChanged: boolean;
       }>,
     ) => {
@@ -65,7 +69,7 @@ const draftsSlice = createSlice({
 
     completedDraft: (
       state,
-      action: PayloadAction<{ id: string; draft: FormValues }>,
+      action: PayloadAction<{ id: string; draft: DraftForm }>,
     ) => {
       state.draftsList = state.draftsList.map(item => {
         if (item.id !== action.payload.id) return item;
@@ -74,10 +78,10 @@ const draftsSlice = createSlice({
           ...item,
           isCompleted: true,
           status: 'saved',
-          updatedAt: dayjs(),
+          updatedAt: dayjs().format('DD-MM-YYYY HH:mm:ss'),
           completedData: convertFormValuesToServiceLog(
             item.id,
-            action.payload.draft,
+            fromDraftForm(action.payload.draft),
           ),
         };
       });

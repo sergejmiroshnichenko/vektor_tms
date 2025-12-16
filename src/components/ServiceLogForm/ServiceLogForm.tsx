@@ -18,6 +18,7 @@ import {
   setEditingStatus,
 } from 'store/slices/draftsSlice.ts';
 import { useEffect } from 'react';
+import { fromDraftForm, toDraftForm } from 'helpers/formatters.ts';
 
 export const ServiceLogForm = () => {
   const { editingLog } = useAppSelector(state => state.serviceLogs);
@@ -27,46 +28,49 @@ export const ServiceLogForm = () => {
 
   const dispatch = useAppDispatch();
 
-  const { control, watch, setValue, handleSubmit } = useForm<FormValues>({
-    mode: 'onChange',
-    reValidateMode: 'onChange',
-    resolver: yupResolver(serviceLogSchema) as Resolver<FormValues>,
-    defaultValues: editingLog
-      ? getInitialEditValues(editingLog)
-      : getEmptyValues(),
-  });
+  const { control, watch, setValue, handleSubmit, reset, getValues } =
+    useForm<FormValues>({
+      mode: 'onChange',
+      reValidateMode: 'onChange',
+      resolver: yupResolver(serviceLogSchema) as Resolver<FormValues>,
+      defaultValues: getEmptyValues(),
+    });
 
   const activeDraft = draftsList.find(draft => draft.id === activeDraftId);
 
-  // useEffect(() => {
-  //   // if (!modalActive) {
-  //   //   reset(getEmptyValues());
-  //   // }
-  //
-  //   if (editingLog) {
-  //     return reset(getInitialEditValues(editingLog));
-  //   }
-  //   if (activeDraft) {
-  //     reset(activeDraft.draft);
-  //   } else {
-  //     reset(getEmptyValues());
-  //   }
-  // }, [activeDraftId, editingLog, reset]);
+  useEffect(() => {
+    // Если редактируем существующий лог
+    if (editingLog) {
+      reset(getInitialEditValues(editingLog));
+      return;
+    }
+    // Если открыли драфт
+    if (activeDraftId) {
+      if (activeDraft) {
+        // reset(draft.draft);
+        reset(fromDraftForm(activeDraft.draft));
+        return;
+      }
+    }
+    // Если ничего нет — пустая форма
+    reset(getEmptyValues());
+  }, [activeDraftId, editingLog, reset]);
 
   useEffect(() => {
-    if (!activeDraftId) return;
+    if (!activeDraftId || editingLog) return;
 
     let timer: ReturnType<typeof setTimeout>;
 
     // subscribe on change fields form
-    const subscription = watch(values => {
+    const subscription = watch(() => {
+      const fullValues = getValues(); // FormValues
       const isActuallyChanged =
         // reset (Submit draft => Save), if there were changes in the form fields
-        JSON.stringify(values) !== JSON.stringify(activeDraft?.draft); // should be 'false',then if click on the another draft.isCompleted
+        JSON.stringify(fullValues) !== JSON.stringify(activeDraft?.draft); // should be 'false',then if click on the another draft.isCompleted
 
       const skipKeys = ['type', 'dateIn', 'dateOut'];
 
-      Object.entries(values).some(([key, value]) => {
+      Object.entries(fullValues).some(([key, value]) => {
         if (!skipKeys.includes(key) && value) {
           dispatch(setEditingStatus({ id: activeDraftId }));
         }
@@ -77,7 +81,8 @@ export const ServiceLogForm = () => {
         dispatch(
           autoSavingDraft({
             id: activeDraftId,
-            draft: values as FormValues,
+            // draft: values as DraftForm,
+            draft: toDraftForm(fullValues),
             isChanged: isActuallyChanged,
           }),
         );
@@ -88,7 +93,7 @@ export const ServiceLogForm = () => {
       clearTimeout(timer);
       subscription.unsubscribe();
     };
-  }, [activeDraftId, dispatch, watch]);
+  }, [activeDraftId, dispatch, watch, editingLog]);
 
   const onSubmit = (data: FormValues) => {
     console.log('Form data', data);
@@ -105,7 +110,7 @@ export const ServiceLogForm = () => {
     };
 
     if (!editingLog) {
-      dispatch(completedDraft({ id: activeDraftId, draft: data }));
+      dispatch(completedDraft({ id: activeDraftId, draft: toDraftForm(data) }));
     } else {
       const updatedLog = {
         ...editingLog,

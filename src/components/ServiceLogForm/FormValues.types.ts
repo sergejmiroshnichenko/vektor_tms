@@ -5,10 +5,27 @@ export type FormValues = {
   provider: string;
   serviceOrder: string;
   equipment: string;
-  odometer: number | undefined;
-  engineHours: number | undefined;
+  odometer?: number;
+  engineHours?: number;
   dateIn: dayjs.Dayjs;
   dateOut: dayjs.Dayjs | null;
   type: ServiceTypes;
-  serviceDescription: string | null;
+  serviceDescription?: string | null;
+};
+
+// export type DraftForm = Omit<FormValues, 'dateIn' | 'dateOut'> & {
+//   dateIn: string;
+//   dateOut: string | null;
+// };
+
+export type DraftForm = {
+  provider: string;
+  serviceOrder: string;
+  equipment: string;
+  odometer?: number;
+  engineHours?: number;
+  dateIn: string; // ISO
+  dateOut: string | null; // ISO
+  type: ServiceTypes;
+  serviceDescription?: string | null;
 };

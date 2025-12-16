@@ -12,9 +12,9 @@ export const DraftActions = () => {
     state => state.serviceDrafts,
   );
 
-  const isActiveSavedDraft = draftsList.find(
-    draft => draft.isCompleted && draft.id === activeDraftId,
-  );
+  const activeDraft = draftsList.find(draft => draft.id === activeDraftId);
+  const isActiveSavedDraft = !!activeDraft?.isCompleted;
+  const showLastSaved = !isActiveSavedDraft && activeDraft?.updatedAt;
 
   return (
     <div>
@@ -61,6 +61,11 @@ export const DraftActions = () => {
             </Typography>
           </Box>
         )}
+        {showLastSaved && (
+          <Typography sx={{ fontSize: '13px', color: 'text.secondary' }}>
+            Last saved at {showLastSaved}
+          </Typography>
+        )}
         <Button
           size="small"
           variant="text"
@@ -74,15 +79,9 @@ export const DraftActions = () => {
           type="submit"
           form="service-log-form"
           variant="contained"
-          size="small">
-          {isActiveSavedDraft ? (
-            <div>
-              <CheckIcon color="warning" />
-              <span>SUBMIT DRAFT</span>
-            </div>
-          ) : (
-            'SAVE'
-          )}
+          size="small"
+          startIcon={isActiveSavedDraft && <CheckIcon color="inherit" />}>
+          {isActiveSavedDraft ? 'SUBMIT DRAFT' : 'SAVE'}
         </Button>
       </Box>
     </div>

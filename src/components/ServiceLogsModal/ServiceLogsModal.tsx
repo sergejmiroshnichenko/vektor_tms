@@ -1,5 +1,8 @@
 import { useAppDispatch, useAppSelector } from 'hooks/redux-hooks.ts';
-import { setModalActive } from 'store/slices/serviceLogsSlice.ts';
+import {
+  setEditingLog,
+  setModalActive,
+} from 'store/slices/serviceLogsSlice.ts';
 import {
   Box,
   Dialog,
@@ -19,7 +22,10 @@ export const ServiceLogsModal = () => {
   const { activeDraftId } = useAppSelector(state => state.serviceDrafts);
   const dispatch = useAppDispatch();
 
-  const onClose = () => dispatch(setModalActive(false));
+  const onClose = () => {
+    dispatch(setModalActive(false));
+    dispatch(setEditingLog(null));
+  };
 
   return (
     <Dialog open={modalActive} onClose={onClose} fullWidth maxWidth="xl">

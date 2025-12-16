@@ -14,6 +14,7 @@ import {
 import { useAppDispatch, useAppSelector } from 'hooks/redux-hooks.ts';
 import { addDraft } from 'store/slices/draftsSlice.ts';
 import { getEmptyValues } from 'components/ServiceLogForm/FormInitialValues.ts';
+import { toDraftForm } from 'helpers/formatters.ts';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -44,7 +45,7 @@ function App() {
             sx={{ marginLeft: 'auto' }}
             onClick={() => {
               dispatch(setEditingLog(null));
-              dispatch(addDraft({ draft: getEmptyValues() }));
+              dispatch(addDraft({ draft: toDraftForm(getEmptyValues()) }));
               dispatch(setModalActive(true));
             }}>
             <AddIcon sx={{ fontSize: 20, mr: 1.2 }} /> ADD

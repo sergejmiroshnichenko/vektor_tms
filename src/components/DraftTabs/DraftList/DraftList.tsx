@@ -18,6 +18,8 @@ import ClearIcon from '@mui/icons-material/Clear';
 import { getEmptyValues } from 'components/ServiceLogForm/FormInitialValues.ts';
 import { styles } from './DraftList.styles.ts';
 import { truncateServiceOrder } from 'helpers/stringHelpers.ts';
+import { setEditingLog } from 'store/slices/serviceLogsSlice.ts';
+import { toDraftForm } from 'helpers/formatters.ts';
 
 export const DraftList = () => {
   const { draftsList, activeDraftId } = useAppSelector(
@@ -105,7 +107,8 @@ export const DraftList = () => {
           <Tab
             disabled={disableAdd}
             onClick={() => {
-              dispatch(addDraft({ draft: getEmptyValues() }));
+              dispatch(setEditingLog(null));
+              dispatch(addDraft({ draft: toDraftForm(getEmptyValues()) }));
             }}
             sx={{
               ...styles.addIcon,
