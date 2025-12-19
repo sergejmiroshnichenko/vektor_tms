@@ -1,13 +1,13 @@
 import { Resolver, useForm } from 'react-hook-form';
-import { ServiceTypes } from 'types/IServiceLog.ts';
 import { FormValues } from 'components/ServiceLogForm/FormValues.types.ts';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { serviceLogSchema } from 'components/ServiceLogForm/serviceLogSchema.ts';
 import {
+  convertFormValuesToServiceLog,
   getEmptyValues,
   getInitialEditValues,
 } from 'components/ServiceLogForm/FormInitialValues.ts';
-import { setUpdateLog } from 'store/slices/serviceLogsSlice.ts';
+import { addNewLog, setUpdateLog } from 'store/slices/serviceLogsSlice.ts';
 import { useAppDispatch, useAppSelector } from 'hooks/redux-hooks.ts';
 import { EquipmentSection } from 'components/ServiceLogForm/FormSections/EquipmentSection.tsx';
 import { ProviderSection } from 'components/ServiceLogForm/FormSections/ProviderSection.tsx';
@@ -15,6 +15,7 @@ import { ServiceDetailsSection } from 'components/ServiceLogForm/FormSections/Se
 import {
   autoSavingDraft,
   completedDraft,
+  deleteActiveDraft,
   setEditingStatus,
 } from 'store/slices/draftsSlice.ts';
 import { useEffect } from 'react';
@@ -39,21 +40,17 @@ export const ServiceLogForm = () => {
   const activeDraft = draftsList.find(draft => draft.id === activeDraftId);
 
   useEffect(() => {
-    // Если редактируем существующий лог
+    // if edit current log === IServiceLog
     if (editingLog) {
       reset(getInitialEditValues(editingLog));
       return;
     }
-    // Если открыли драфт
-    if (activeDraftId) {
-      if (activeDraft) {
-        // reset(draft.draft);
-        reset(fromDraftForm(activeDraft.draft));
-        return;
-      }
+    // when open draft
+    if (activeDraft) {
+      reset(fromDraftForm(activeDraft.draft));
+      return;
     }
-    // Если ничего нет — пустая форма
-    reset(getEmptyValues());
+    reset(getEmptyValues()); // when there is nothing —> empty form
   }, [activeDraftId, editingLog, reset]);
 
   useEffect(() => {
@@ -81,7 +78,6 @@ export const ServiceLogForm = () => {
         dispatch(
           autoSavingDraft({
             id: activeDraftId,
-            // draft: values as DraftForm,
             draft: toDraftForm(fullValues),
             isChanged: isActuallyChanged,
           }),
@@ -98,28 +94,23 @@ export const ServiceLogForm = () => {
   const onSubmit = (data: FormValues) => {
     console.log('Form data', data);
 
-    const commonLogFields = {
-      type: data.type as ServiceTypes,
-      completedDate: data.dateIn.format('YYYY-MM-DD'),
-      odometer: data.odometer ?? 0,
-      engineHours: data.engineHours ?? 0,
-      serviceDescription: data.serviceDescription ?? '',
-      serviceOrder: data.serviceOrder,
-      provider: data.provider,
-      equipment: data.equipment,
-    };
+    const isSubmittingDraft = !editingLog && activeDraft?.isCompleted;
 
-    if (!editingLog) {
-      dispatch(completedDraft({ id: activeDraftId, draft: toDraftForm(data) }));
-    } else {
-      const updatedLog = {
-        ...editingLog,
-        ...commonLogFields,
-        id: editingLog.id,
-        driver: editingLog.driver,
-        totalAmount: editingLog.totalAmount,
-      };
-      dispatch(setUpdateLog(updatedLog));
+    if (editingLog) {
+      dispatch(
+        setUpdateLog(
+          convertFormValuesToServiceLog(editingLog.id, data, editingLog),
+        ),
+      );
+      return;
+    }
+
+    dispatch(completedDraft({ id: activeDraftId, draft: toDraftForm(data) }));
+
+    if (isSubmittingDraft) {
+      const serviceLog = convertFormValuesToServiceLog(activeDraftId, data);
+      dispatch(addNewLog(serviceLog));
+      dispatch(deleteActiveDraft(activeDraftId));
     }
   };
 

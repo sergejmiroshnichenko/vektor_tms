@@ -24,8 +24,8 @@ export type DraftForm = {
   equipment: string;
   odometer?: number;
   engineHours?: number;
-  dateIn: string; // ISO
-  dateOut: string | null; // ISO
+  dateIn: string;
+  dateOut: string | null;
   type: ServiceTypes;
   serviceDescription?: string | null;
 };

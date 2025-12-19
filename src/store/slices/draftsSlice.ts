@@ -22,7 +22,7 @@ const draftsSlice = createSlice({
     addDraft: (state, action: PayloadAction<{ draft: DraftForm }>) => {
       const newDraft: IDraftTypes = {
         id: dayjs().valueOf().toString(),
-        createdAt: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+        createdAt: dayjs().format('DD-MM-YYYY HH:mm:ss'),
         status: 'idle',
         draft: action.payload.draft,
         isCompleted: false,

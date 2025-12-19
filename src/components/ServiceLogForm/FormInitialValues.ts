@@ -24,13 +24,12 @@ export const getInitialEditValues = (editingLog: IServiceLog): FormValues => ({
   odometer: editingLog.odometer,
   engineHours: editingLog.engineHours,
   serviceDescription: editingLog.serviceDescription,
-  // driver: editingLog.driver,
-  // totalAmount: editingLog.totalAmount,
 });
 
 export const convertFormValuesToServiceLog = (
   id: string,
   form: FormValues,
+  prev?: IServiceLog,
 ): IServiceLog => ({
   id,
   provider: form.provider,
@@ -39,8 +38,8 @@ export const convertFormValuesToServiceLog = (
   odometer: form.odometer ?? 0,
   engineHours: form.engineHours ?? 0,
   completedDate: dayjs(form.dateIn).format('YYYY-MM-DD'),
-  type: 'planned', // default
+  type: form?.type ?? 'planned',
   serviceDescription: form.serviceDescription ?? '',
-  driver: '',
-  totalAmount: 0,
+  driver: prev?.driver ?? '',
+  totalAmount: prev?.totalAmount ?? 0,
 });
