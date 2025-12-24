@@ -25,10 +25,12 @@ import { HEADERS, SERVICE_LOGS_COLUMN_WIDTHS } from 'constants/serviceTypes.ts';
 import { IServiceLog, ServiceTypes } from 'types/IServiceLog.ts';
 import { HighlightTextParts } from 'components/HighlightTextParts.tsx';
 import dayjs from 'dayjs';
-import { ServiceLogsFooter } from 'components/ServiceLogsTable/ServiceLogsFooter.tsx';
+import { ServiceLogsFooter } from './ServiceLogsFooter.tsx';
+import { useSnackbar } from 'notistack';
 
 export const ServiceLogsTable = () => {
   const dispatch = useAppDispatch();
+  const { enqueueSnackbar } = useSnackbar();
 
   const {
     logs,
@@ -117,7 +119,12 @@ export const ServiceLogsTable = () => {
           <IconButton
             size="small"
             color="error"
-            onClick={() => dispatch(deleteLog(params.row.id))}>
+            onClick={() => {
+              dispatch(deleteLog(params.row.id));
+              enqueueSnackbar('Service log removed', {
+                variant: 'success',
+              });
+            }}>
             <DeleteIcon />
           </IconButton>
         </Tooltip>

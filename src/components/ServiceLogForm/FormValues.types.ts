@@ -13,19 +13,7 @@ export type FormValues = {
   serviceDescription?: string | null;
 };
 
-// export type DraftForm = Omit<FormValues, 'dateIn' | 'dateOut'> & {
-//   dateIn: string;
-//   dateOut: string | null;
-// };
-
-export type DraftForm = {
-  provider: string;
-  serviceOrder: string;
-  equipment: string;
-  odometer?: number;
-  engineHours?: number;
+export type DraftForm = Omit<FormValues, 'dateIn' | 'dateOut'> & {
   dateIn: string;
   dateOut: string | null;
-  type: ServiceTypes;
-  serviceDescription?: string | null;
 };

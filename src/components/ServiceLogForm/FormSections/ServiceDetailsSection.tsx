@@ -17,7 +17,7 @@ import { ServiceTypes } from 'types/IServiceLog.ts';
 import { getServiceTypeStyle } from 'helpers/getServiceTypeColor.ts';
 import { capitalize } from 'helpers/stringHelpers.ts';
 import { Section } from 'components/Section.tsx';
-import { FormValues } from 'components/ServiceLogForm/FormValues.types.ts';
+import { FormValues } from '../FormValues.types.ts';
 import { useEffect } from 'react';
 
 interface ServiceDetailsProps {

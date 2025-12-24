@@ -1,17 +1,13 @@
 import { Resolver, useForm } from 'react-hook-form';
-import { FormValues } from 'components/ServiceLogForm/FormValues.types.ts';
+import { FormValues } from './FormValues.types.ts';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { serviceLogSchema } from 'components/ServiceLogForm/serviceLogSchema.ts';
-import {
-  convertFormValuesToServiceLog,
-  getEmptyValues,
-  getInitialEditValues,
-} from 'components/ServiceLogForm/FormInitialValues.ts';
+import { serviceLogSchema } from './serviceLogSchema.ts';
+import { getEditValues, getEmptyValues } from './FormDefaults.ts';
 import { addNewLog, setUpdateLog } from 'store/slices/serviceLogsSlice.ts';
 import { useAppDispatch, useAppSelector } from 'hooks/redux-hooks.ts';
-import { EquipmentSection } from 'components/ServiceLogForm/FormSections/EquipmentSection.tsx';
-import { ProviderSection } from 'components/ServiceLogForm/FormSections/ProviderSection.tsx';
-import { ServiceDetailsSection } from 'components/ServiceLogForm/FormSections/ServiceDetailsSection.tsx';
+import { EquipmentSection } from './FormSections/EquipmentSection.tsx';
+import { ProviderSection } from './FormSections/ProviderSection.tsx';
+import { ServiceDetailsSection } from './FormSections/ServiceDetailsSection.tsx';
 import {
   autoSavingDraft,
   completedDraft,
@@ -19,7 +15,12 @@ import {
   setEditingStatus,
 } from 'store/slices/draftsSlice.ts';
 import { useEffect } from 'react';
-import { fromDraftForm, toDraftForm } from 'helpers/formatters.ts';
+import {
+  convertFormValuesToServiceLog,
+  fromDraftForm,
+  toDraftForm,
+} from './FormConverts.ts';
+import { useSnackbar } from 'notistack';
 
 export const ServiceLogForm = () => {
   const { editingLog } = useAppSelector(state => state.serviceLogs);
@@ -28,6 +29,7 @@ export const ServiceLogForm = () => {
   );
 
   const dispatch = useAppDispatch();
+  const { enqueueSnackbar } = useSnackbar();
 
   const { control, watch, setValue, handleSubmit, reset, getValues } =
     useForm<FormValues>({
@@ -42,7 +44,7 @@ export const ServiceLogForm = () => {
   useEffect(() => {
     // if edit current log === IServiceLog
     if (editingLog) {
-      reset(getInitialEditValues(editingLog));
+      reset(getEditValues(editingLog));
       return;
     }
     // when open draft
@@ -102,6 +104,9 @@ export const ServiceLogForm = () => {
           convertFormValuesToServiceLog(editingLog.id, data, editingLog),
         ),
       );
+      enqueueSnackbar('Service log updated', {
+        variant: 'success',
+      });
       return;
     }
 
@@ -111,6 +116,9 @@ export const ServiceLogForm = () => {
       const serviceLog = convertFormValuesToServiceLog(activeDraftId, data);
       dispatch(addNewLog(serviceLog));
       dispatch(deleteActiveDraft(activeDraftId));
+      enqueueSnackbar('Draft successfully submitted', {
+        variant: 'success',
+      });
     }
   };
 

@@ -2,7 +2,7 @@ import PrivacyTipIcon from '@mui/icons-material/PrivacyTip';
 import { InputField } from 'components/InputField.tsx';
 import { Section } from 'components/Section.tsx';
 import { Control } from 'react-hook-form';
-import { FormValues } from 'components/ServiceLogForm/FormValues.types.ts';
+import { FormValues } from '../FormValues.types.ts';
 
 interface ProviderSectionProps {
   control: Control<FormValues>;

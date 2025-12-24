@@ -2,8 +2,10 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IDraftTypes } from 'types/IDraft.types.ts';
 import dayjs from 'dayjs';
 import { DraftForm } from 'components/ServiceLogForm/FormValues.types.ts';
-import { convertFormValuesToServiceLog } from 'components/ServiceLogForm/FormInitialValues.ts';
-import { fromDraftForm } from 'helpers/formatters.ts';
+import {
+  convertFormValuesToServiceLog,
+  fromDraftForm,
+} from 'components/ServiceLogForm/FormConverts.ts';
 
 interface initialStateProps {
   draftsList: IDraftTypes[];
