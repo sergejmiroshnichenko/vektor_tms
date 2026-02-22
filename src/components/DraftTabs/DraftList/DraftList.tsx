@@ -26,6 +26,9 @@ export const DraftList = () => {
     state => state.serviceDrafts,
   );
   console.log('draftList Component>>>>>>', draftsList);
+  const notCompleted = draftsList.filter(draft => !draft.isCompleted)[0];
+  console.log('notCompleted', notCompleted);
+
   const dispatch = useAppDispatch();
 
   const disableAdd = draftsList.some(draft => !draft.isCompleted);

@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IServiceLog, ServiceTypes } from 'types/IServiceLog';
 import { SERVICE_TYPES } from 'constants/serviceTypes.ts';
 import { Dayjs } from 'dayjs';
+import { saveServiceLogs } from '../../utils/storage.ts';
 
 export const fetchServiceLogs = createAsyncThunk<IServiceLog[]>(
   'serviceLogs/fetch',
@@ -49,6 +50,7 @@ const serviceLogsSlice = createSlice({
   reducers: {
     deleteLog: (state, action: PayloadAction<string>) => {
       state.logs = state.logs.filter(item => item.id !== action.payload);
+      saveServiceLogs(state.logs);
     },
     setSelectedServiceTypes: (state, action: PayloadAction<ServiceTypes[]>) => {
       state.selectedServiceTypes =
@@ -75,6 +77,7 @@ const serviceLogsSlice = createSlice({
     },
     addNewLog: (state, action: PayloadAction<IServiceLog>) => {
       state.logs.push(action.payload);
+      saveServiceLogs(state.logs);
     },
     setEditingLog: (state, action: PayloadAction<IServiceLog | null>) => {
       state.editingLog = action.payload;
@@ -83,7 +86,11 @@ const serviceLogsSlice = createSlice({
       state.logs = state.logs.map(log =>
         log.id === action.payload.id ? action.payload : log,
       );
+      saveServiceLogs(state.logs);
       state.modalActive = false;
+    },
+    setServiceLogs: (state, action: PayloadAction<IServiceLog[]>) => {
+      state.logs = action.payload;
     },
   },
   extraReducers: builder => {
@@ -113,5 +120,6 @@ export const {
   addNewLog,
   setEditingLog,
   setUpdateLog,
+  setServiceLogs,
 } = serviceLogsSlice.actions;
 export default serviceLogsSlice.reducer;

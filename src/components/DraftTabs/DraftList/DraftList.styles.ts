@@ -4,8 +4,6 @@ export const styles = {
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
     position: 'relative',
-    // minWidth: '120px',
-    // maxWidth: { xs: 120, sm: 150, md: 200 },
     textTransform: 'none',
     pt: 0,
     transition: '0.3s ease',

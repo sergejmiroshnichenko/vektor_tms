@@ -6,6 +6,7 @@ import {
   convertFormValuesToServiceLog,
   fromDraftForm,
 } from 'components/ServiceLogForm/FormConverts.ts';
+import { saveDrafts } from '../../utils/storage.ts';
 
 interface initialStateProps {
   draftsList: IDraftTypes[];
@@ -33,6 +34,7 @@ const draftsSlice = createSlice({
       if (!lastDraft || lastDraft.isCompleted) {
         state.draftsList.push(newDraft);
         state.activeDraftId = newDraft.id; // create activeDraftId
+        saveDrafts(state.draftsList);
       }
     },
 
@@ -67,6 +69,7 @@ const draftsSlice = createSlice({
           status: 'saving',
         };
       });
+      saveDrafts(state.draftsList);
     },
 
     completedDraft: (
@@ -95,6 +98,7 @@ const draftsSlice = createSlice({
     clearAllDrafts: state => {
       state.draftsList = [];
       state.activeDraftId = '';
+      saveDrafts([]);
     },
     deleteActiveDraft: (state, action: PayloadAction<string>) => {
       const index = state.draftsList.findIndex(
@@ -112,6 +116,13 @@ const draftsSlice = createSlice({
         state.activeDraftId = state.draftsList[index].id;
       }
     },
+    setDrafts: (state, action: PayloadAction<IDraftTypes[]>) => {
+      state.draftsList = action.payload;
+      const lastDraft = state.draftsList[state.draftsList.length - 1];
+
+      state.activeDraftId =
+        lastDraft && !lastDraft.isCompleted ? lastDraft.id : '';
+    },
   },
 });
 
@@ -123,5 +134,6 @@ export const {
   setActiveDraftId,
   clearAllDrafts,
   deleteActiveDraft,
+  setDrafts,
 } = draftsSlice.actions;
 export default draftsSlice.reducer;

@@ -15,6 +15,7 @@ import {
   setEditingLog,
   setModalActive,
   setPagination,
+  setServiceLogs,
 } from 'store/slices/serviceLogsSlice.ts';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
@@ -27,6 +28,7 @@ import { HighlightTextParts } from 'components/HighlightTextParts.tsx';
 import dayjs from 'dayjs';
 import { ServiceLogsFooter } from './ServiceLogsFooter.tsx';
 import { useSnackbar } from 'notistack';
+import { loadServiceLogs } from '../../utils/storage.ts';
 
 export const ServiceLogsTable = () => {
   const dispatch = useAppDispatch();
@@ -45,10 +47,14 @@ export const ServiceLogsTable = () => {
   } = useAppSelector(state => state.serviceLogs);
 
   useEffect(() => {
-    if (!logs.length) {
+    const storedLogs = loadServiceLogs();
+
+    if (storedLogs.length) {
+      dispatch(setServiceLogs(storedLogs));
+    } else {
       dispatch(fetchServiceLogs());
     }
-  }, [dispatch, logs.length]);
+  }, [dispatch]);
 
   const columns: GridColDef<IServiceLog>[] = HEADERS.map(
     ({ field, headerName }) => {

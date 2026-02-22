@@ -10,15 +10,30 @@ import { ServiceLogsModal } from 'components/ServiceLogsModal/ServiceLogsModal.t
 import {
   setEditingLog,
   setModalActive,
+  setServiceLogs,
 } from 'store/slices/serviceLogsSlice.ts';
 import { useAppDispatch, useAppSelector } from 'hooks/redux-hooks.ts';
-import { addDraft } from 'store/slices/draftsSlice.ts';
+import { addDraft, setDrafts } from 'store/slices/draftsSlice.ts';
 import { getEmptyValues } from 'components/ServiceLogForm/FormDefaults.ts';
 import { toDraftForm } from 'components/ServiceLogForm/FormConverts.ts';
+import { useEffect } from 'react';
+import { loadDrafts, loadServiceLogs } from './utils/storage.ts';
 
 function App() {
   const dispatch = useAppDispatch();
   const { modalActive } = useAppSelector(state => state.serviceLogs);
+
+  useEffect(() => {
+    const drafts = loadDrafts();
+    if (drafts.length) {
+      dispatch(setDrafts(drafts));
+    }
+
+    const logs = loadServiceLogs();
+    if (logs.length) {
+      dispatch(setServiceLogs(logs));
+    }
+  }, [dispatch]);
 
   return (
     <Box>
