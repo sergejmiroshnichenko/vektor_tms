@@ -94,8 +94,6 @@ export const ServiceLogForm = () => {
   }, [activeDraftId, dispatch, watch, editingLog]);
 
   const onSubmit = (data: FormValues) => {
-    console.log('Form data', data);
-
     const isSubmittingDraft = !editingLog && activeDraft?.isCompleted;
 
     if (editingLog) {

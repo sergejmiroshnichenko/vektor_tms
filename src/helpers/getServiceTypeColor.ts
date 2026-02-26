@@ -1,14 +1,15 @@
 import { ServiceTypes } from 'types/IServiceLog.ts';
+import { colors } from 'theme/colors.ts';
 
 export const getServiceTypeStyle = (type?: ServiceTypes | '') => {
   switch (type) {
     case 'planned':
-      return { color: 'green', bg: 'rgba(33,173,54,0.2)' };
+      return { color: colors.servicePlanned, bg: colors.servicePlannedBg };
     case 'unplanned':
-      return { color: 'orange', bg: 'rgba(255,165,0,0.2)' };
+      return { color: colors.serviceUnplanned, bg: colors.serviceUnplannedBg };
     case 'emergency':
-      return { color: 'red', bg: 'rgba(239,83,80,0.2)' };
+      return { color: colors.serviceEmergency, bg: colors.serviceEmergencyBg };
     default:
-      return { color: '#9e9e9e', bg: '#f5f5f5' };
+      return { color: colors.serviceDefault, bg: colors.serviceDefaultBg };
   }
 };

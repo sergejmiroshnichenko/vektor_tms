@@ -1,5 +1,5 @@
 import { InputField } from 'components/InputField.tsx';
-import { isLetterOnly } from 'helpers/stringHelpers.ts';
+import { isLetterOnly } from 'utils/stringUtils.ts';
 import { useAppDispatch, useAppSelector } from 'hooks/redux-hooks.ts';
 import { setSearchQuery } from 'store/slices/serviceLogsSlice.ts';
 

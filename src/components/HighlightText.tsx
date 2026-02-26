@@ -1,4 +1,7 @@
-export const HighlightTextParts = (text: string, query: string) => {
+import { Box } from '@mui/material';
+import { colors } from 'theme/colors.ts';
+
+export const HighlightText = (text: string, query: string) => {
   if (!query) return [text];
 
   const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -7,9 +10,9 @@ export const HighlightTextParts = (text: string, query: string) => {
 
   return parts.map((part, i) =>
     part.toLowerCase() === query.toLowerCase() ? (
-      <span key={i} style={{ backgroundColor: 'yellow' }}>
+      <Box component="span" key={i} sx={{ backgroundColor: colors.highlight }}>
         {part}
-      </span>
+      </Box>
     ) : (
       part
     ),

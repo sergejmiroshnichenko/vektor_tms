@@ -17,10 +17,10 @@ export const ServiceLogsFooter = () => {
       <Box
         sx={{
           background: theme.palette.primary.main,
-          p: '4px',
+          p: 0.5,
           color: theme.palette.primary.contrastText,
-          minWidth: '60px',
-          borderRadius: '6px',
+          minWidth: 60,
+          borderRadius: 1.5,
           mb: 0.5,
           boxShadow: '0px 1px 5px rgba(0,0,0,0.5)',
         }}>

@@ -1,8 +1,8 @@
 import { InputAdornment, TextField } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { Control, Controller } from 'react-hook-form';
-import React, { ReactNode } from 'react';
-import { sanitizeInputValue } from 'helpers/stringHelpers.ts';
+import { ReactNode, RefObject } from 'react';
+import { sanitizeInputValue } from 'utils/stringUtils.ts';
 
 interface InputFieldProps {
   name?: string;
@@ -19,7 +19,7 @@ interface InputFieldProps {
   type?: 'string' | 'number';
   children?: ReactNode;
   sx?: object;
-  inputRef?: React.RefObject<HTMLInputElement | null>;
+  inputRef?: RefObject<HTMLInputElement | null>;
 }
 
 export const InputField = ({
@@ -41,7 +41,7 @@ export const InputField = ({
   const renderTextField = (
     fieldValue: string | number,
     handleChange: (value: string) => void,
-    ref?: React.RefObject<HTMLInputElement | null>,
+    ref?: RefObject<HTMLInputElement | null>,
     errorMessage?: string,
   ) => {
     const isEmpty = !String(fieldValue).trim();
@@ -115,4 +115,5 @@ export const InputField = ({
   if (value !== undefined && onChange) {
     return renderTextField(value, onChange, inputRef);
   }
+  return null;
 };

@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IServiceLog, ServiceTypes } from 'types/IServiceLog';
 import { SERVICE_TYPES } from 'constants/serviceTypes.ts';
 import { Dayjs } from 'dayjs';
-import { saveServiceLogs } from '../../utils/storage.ts';
+import { saveServiceLogs } from 'utils/storage.ts';
 
 export const fetchServiceLogs = createAsyncThunk<IServiceLog[]>(
   'serviceLogs/fetch',

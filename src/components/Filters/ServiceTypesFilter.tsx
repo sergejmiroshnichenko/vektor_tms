@@ -8,6 +8,7 @@ import { setSelectedServiceTypes } from 'store/slices/serviceLogsSlice.ts';
 import { useMemo } from 'react';
 import { getPaginatedFilteredLogs } from 'helpers/getPaginatedFilteredLogs.ts';
 import { getServiceTypeStyle } from 'helpers/getServiceTypeColor.ts';
+import { radius } from 'theme/constants.ts';
 
 export const ServiceTypesFilter = () => {
   const {
@@ -88,8 +89,8 @@ export const ServiceTypesFilter = () => {
         label="ALL"
       />
       {SERVICE_TYPES.map(type => {
-        // const color = getServiceTypeColor(type);
         const color = getServiceTypeStyle(type);
+
         return (
           <Box key={type}>
             <FormControlLabel
@@ -110,7 +111,7 @@ export const ServiceTypesFilter = () => {
               sx={{
                 fontSize: 10,
                 background: 'beige',
-                borderRadius: '50%',
+                borderRadius: radius.circle,
                 padding: 0.5,
                 marginRight: 1,
               }}>

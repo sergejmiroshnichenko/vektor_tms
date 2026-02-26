@@ -5,6 +5,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import { useAppDispatch, useAppSelector } from 'hooks/redux-hooks.ts';
 import { clearAllDrafts, deleteActiveDraft } from 'store/slices/draftsSlice.ts';
 import { setModalActive } from 'store/slices/serviceLogsSlice.ts';
+import { colors } from 'theme/colors.ts';
 
 export const DraftActions = () => {
   const dispatch = useAppDispatch();
@@ -56,13 +57,13 @@ export const DraftActions = () => {
             <CheckCircleIcon color="success" fontSize="small" />
             <Typography
               component="span"
-              sx={{ color: 'green', fontSize: '14px' }}>
+              sx={{ color: colors.draftSaved, fontSize: 14 }}>
               DRAFT SAVED
             </Typography>
           </Box>
         )}
         {showLastSaved && (
-          <Typography sx={{ fontSize: '13px', color: 'text.secondary' }}>
+          <Typography sx={{ fontSize: 13, color: 'text.secondary' }}>
             Last saved at {showLastSaved}
           </Typography>
         )}

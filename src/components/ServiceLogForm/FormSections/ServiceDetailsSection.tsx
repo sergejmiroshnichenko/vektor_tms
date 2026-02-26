@@ -15,7 +15,7 @@ import { InputField } from 'components/InputField.tsx';
 import { SERVICE_TYPES } from 'constants/serviceTypes.ts';
 import { ServiceTypes } from 'types/IServiceLog.ts';
 import { getServiceTypeStyle } from 'helpers/getServiceTypeColor.ts';
-import { capitalize } from 'helpers/stringHelpers.ts';
+import { capitalize } from 'utils/stringUtils.ts';
 import { Section } from 'components/Section.tsx';
 import { FormValues } from '../FormValues.types.ts';
 import { useEffect } from 'react';

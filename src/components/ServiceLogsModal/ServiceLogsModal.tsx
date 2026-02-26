@@ -11,9 +11,10 @@ import {
   DialogTitle,
 } from '@mui/material';
 import { ServiceLogForm } from 'components/ServiceLogForm/ServiceLogForm.tsx';
-import { DraftList } from 'components/DraftTabs/DraftList/DraftList.tsx';
+import { DraftTabs } from 'components/DraftTabs/DraftTabs.tsx';
 import { EditActions } from './Actions/EditActions.tsx';
 import { DraftActions } from './Actions/DraftActions.tsx';
+import { colors } from 'theme/colors.ts';
 
 export const ServiceLogsModal = () => {
   const { modalActive, editingLog } = useAppSelector(
@@ -34,12 +35,12 @@ export const ServiceLogsModal = () => {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'flex-start',
-          background: '#f5f5f5',
+          background: colors.dialogBg,
           px: 2,
         }}>
         <DialogTitle>{editingLog ? 'Edit Log' : 'Create new log'}</DialogTitle>
 
-        {!editingLog && <DraftList />}
+        {!editingLog && <DraftTabs />}
 
         <DialogActions>
           {editingLog ? <EditActions /> : <DraftActions />}

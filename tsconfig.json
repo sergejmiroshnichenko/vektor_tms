@@ -42,6 +42,12 @@
       "constants/*": [
         "constants/*"
       ],
+      "utils/*": [
+        "utils/*"
+      ],
+      "theme/*": [
+        "theme/*"
+      ]
     },
     /* Linting */
     "strict": true,

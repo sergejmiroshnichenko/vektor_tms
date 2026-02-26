@@ -1,38 +1,19 @@
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import {
-  Box,
-  CircularProgress,
-  IconButton,
-  Paper,
-  Tooltip,
-  Typography,
-} from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
+import { Box, CircularProgress, Paper, Typography } from '@mui/material';
 import { useAppDispatch, useAppSelector } from 'hooks/redux-hooks.ts';
 import { useEffect, useMemo } from 'react';
 import {
-  deleteLog,
   fetchServiceLogs,
-  setEditingLog,
-  setModalActive,
   setPagination,
   setServiceLogs,
 } from 'store/slices/serviceLogsSlice.ts';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import { getServiceTypeStyle } from 'helpers/getServiceTypeColor.ts';
-import { capitalize } from 'helpers/stringHelpers.ts';
 import { getPaginatedFilteredLogs } from 'helpers/getPaginatedFilteredLogs.ts';
-import { HEADERS, SERVICE_LOGS_COLUMN_WIDTHS } from 'constants/serviceTypes.ts';
-import { IServiceLog, ServiceTypes } from 'types/IServiceLog.ts';
-import { HighlightTextParts } from 'components/HighlightTextParts.tsx';
-import dayjs from 'dayjs';
 import { ServiceLogsFooter } from './ServiceLogsFooter.tsx';
-import { useSnackbar } from 'notistack';
-import { loadServiceLogs } from '../../utils/storage.ts';
+import { loadServiceLogs } from 'utils/storage.ts';
+import { useServiceLogsColumns } from 'hooks/useServiceLogsColumn.tsx';
 
 export const ServiceLogsTable = () => {
   const dispatch = useAppDispatch();
-  const { enqueueSnackbar } = useSnackbar();
 
   const {
     logs,
@@ -56,87 +37,7 @@ export const ServiceLogsTable = () => {
     }
   }, [dispatch]);
 
-  const columns: GridColDef<IServiceLog>[] = HEADERS.map(
-    ({ field, headerName }) => {
-      const width = SERVICE_LOGS_COLUMN_WIDTHS[field] ?? 130;
-      return {
-        field,
-        headerName: headerName.toUpperCase(),
-        width,
-        renderCell: params => {
-          const type = params.row.type as ServiceTypes;
-          const value = params.value;
-          // console.log('color #', color); //  color # 'red'
-          // console.log('params row type #', params.row.type); //  params row type # 'emergency'
-          if (field === 'type') {
-            const { color, bg } = getServiceTypeStyle(type);
-            return (
-              <Typography
-                fontSize={13}
-                color={color}
-                style={{
-                  borderRadius: 5,
-                  padding: 5,
-                  display: 'inline',
-                  background: bg,
-                }}>
-                {HighlightTextParts(capitalize(params.value), searchQuery)}
-              </Typography>
-            );
-          }
-          if (field === 'completedDate') {
-            return (
-              <Typography fontSize={13}>
-                {dayjs(value).format('DD/MM/YYYY')}
-              </Typography>
-            );
-          }
-          if (field === 'odometer') {
-            return <Typography fontSize={13}>{value + ' ml'}</Typography>;
-          }
-          if (field === 'totalAmount') {
-            return <Typography fontSize={13}>{'$' + value}</Typography>;
-          }
-          return <>{HighlightTextParts(String(params.value), searchQuery)}</>;
-        },
-      };
-    },
-  );
-
-  columns.push({
-    field: 'action',
-    headerName: '',
-    sortable: false,
-    filterable: false,
-    renderCell: params => (
-      <>
-        <Tooltip title="Edit">
-          <IconButton
-            size="small"
-            color="secondary"
-            onClick={() => {
-              dispatch(setEditingLog(params.row));
-              dispatch(setModalActive(true));
-            }}>
-            <EditOutlinedIcon />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Delete">
-          <IconButton
-            size="small"
-            color="error"
-            onClick={() => {
-              dispatch(deleteLog(params.row.id));
-              enqueueSnackbar('Service log removed', {
-                variant: 'success',
-              });
-            }}>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      </>
-    ),
-  });
+  const columns = useServiceLogsColumns(searchQuery);
 
   const filteredPaginatedLogs = useMemo(() => {
     return getPaginatedFilteredLogs({

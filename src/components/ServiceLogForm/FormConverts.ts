@@ -1,6 +1,6 @@
 import { DraftForm, FormValues } from './FormValues.types.ts';
 import { IServiceLog } from 'types/IServiceLog.ts';
-import { capitalize } from 'helpers/stringHelpers.ts';
+import { capitalize } from 'utils/stringUtils.ts';
 import dayjs from 'dayjs';
 
 export const convertFormValuesToServiceLog = (

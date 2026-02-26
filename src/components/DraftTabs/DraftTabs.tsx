@@ -1,4 +1,4 @@
-import { styles } from './DraftList.styles.ts';
+import { styles } from './DraftTabs.styles.ts';
 import { useAppDispatch, useAppSelector } from 'hooks/redux-hooks.ts';
 import {
   Box,
@@ -17,53 +17,49 @@ import {
 } from 'store/slices/draftsSlice.ts';
 import ClearIcon from '@mui/icons-material/Clear';
 import { getEmptyValues } from 'components/ServiceLogForm/FormDefaults.ts';
-import { truncateServiceOrder } from 'helpers/stringHelpers.ts';
 import { setEditingLog } from 'store/slices/serviceLogsSlice.ts';
 import { toDraftForm } from 'components/ServiceLogForm/FormConverts.ts';
+import { colors } from 'theme/colors.ts';
 
-export const DraftList = () => {
+export const DraftTabs = () => {
   const { draftsList, activeDraftId } = useAppSelector(
     state => state.serviceDrafts,
   );
-  console.log('draftList Component>>>>>>', draftsList);
-  const notCompleted = draftsList.filter(draft => !draft.isCompleted)[0];
-  console.log('notCompleted', notCompleted);
 
   const dispatch = useAppDispatch();
 
   const disableAdd = draftsList.some(draft => !draft.isCompleted);
 
   const getTabBg = (draft: IDraftTypes) =>
-    draft.isCompleted ? '#f5f5f5' : 'white';
+    draft.isCompleted ? colors.tabCompletedBg : colors.tabDefaultBg;
 
   const renderBadge = (draft: IDraftTypes) => {
     const isActive = draft.id === activeDraftId;
 
-    if (!draft.isCompleted) {
-      if (isActive && draft.status === 'editing') {
-        return (
-          <Box>
-            <LinearProgress
-              sx={{
-                height: 8,
-                borderRadius: 2,
-                width: 20,
-              }}
-            />
-          </Box>
-        );
-      }
-      return <Box sx={styles.newBadge}>NEW</Box>;
+    if (draft.isCompleted) return '✔️';
+
+    if (isActive && draft.status === 'editing') {
+      return (
+        <Box>
+          <LinearProgress
+            sx={{
+              height: 8,
+              borderRadius: 2,
+              width: 20,
+            }}
+          />
+        </Box>
+      );
     }
-    return '✔️'; // check ==> isCompleted
+    return <Box sx={styles.newBadge}>NEW</Box>;
   };
 
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+    <Box sx={{ ...styles.container }}>
       <Tabs
         value={activeDraftId}
         onChange={(_, newValue) => dispatch(setActiveDraftId(newValue))}>
-        {draftsList.map((draft: IDraftTypes) => {
+        {draftsList.map(draft => {
           return (
             <Tab
               key={draft.id}
@@ -73,7 +69,7 @@ export const DraftList = () => {
                 background: getTabBg(draft),
               }}
               label={
-                <Box sx={{ marginRight: 'auto' }}>
+                <Box sx={{ ...styles.tabContent }}>
                   <Box
                     sx={{
                       ...styles.titleRow,
@@ -81,10 +77,9 @@ export const DraftList = () => {
                     {renderBadge(draft)}
                     <Typography
                       sx={{
-                        fontSize: '15px',
+                        ...styles.titleText,
                       }}>
-                      {truncateServiceOrder(draft.draft.serviceOrder) ||
-                        'New Draft'}
+                      {draft.draft.serviceOrder || 'New Draft'}
                     </Typography>
                   </Box>
                   <Box
@@ -95,7 +90,7 @@ export const DraftList = () => {
                       e.stopPropagation();
                       dispatch(deleteActiveDraft(draft.id));
                     }}>
-                    <ClearIcon sx={{ fontSize: '16px' }} />
+                    <ClearIcon sx={{ fontSize: 16 }} />
                   </Box>
                 </Box>
               }

@@ -6,7 +6,7 @@ import {
   convertFormValuesToServiceLog,
   fromDraftForm,
 } from 'components/ServiceLogForm/FormConverts.ts';
-import { saveDrafts } from '../../utils/storage.ts';
+import { saveDrafts } from 'utils/storage.ts';
 
 interface initialStateProps {
   draftsList: IDraftTypes[];

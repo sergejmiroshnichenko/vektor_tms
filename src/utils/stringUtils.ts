@@ -15,10 +15,3 @@ export const sanitizeInputValue = (value: string, type: string | number) => {
     .replace(/\s{2,}/g, ' ') // max 1 space
     .slice(0, 21);
 };
-
-export const truncateServiceOrder = (value: string) => {
-  if (value.length > 10) {
-    return value.slice(0, 10) + '...';
-  }
-  return value;
-};
