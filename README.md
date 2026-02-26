@@ -28,11 +28,11 @@ The application allows users to create, manage and save service logs with full d
 
  **2.Service Logs Data Grid**:
 
-  - Advanced filtering (date range, service type)
+  - Filtering by date range and service type
   - Search across key fields
-  - Editable records via dialog
+  - Edit and delete actions for each record
   - Optimized column configuration via memoization
-  - Snackbar-driven UX feedback
+  - Snackbar notifications after create, update and delete actions
 
 ## Libraries and tools
 
