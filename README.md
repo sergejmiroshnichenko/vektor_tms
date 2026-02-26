@@ -43,10 +43,10 @@ Core
 
 UI Layer
 
-- **MUI 7** : Enterprise-ready component system.
-- **MUI DataGrid** : Enterprise-ready component system.
-- **MUI Date Pickers** : Controlled date selection with synchronized form state.
-- **Emotion styling system** : CSS-in-JS styling integrated with MUI theming.
+- **MUI 7**  -  enterprise-ready component system.
+- **MUI DataGrid**  -  enterprise-ready component system.
+- **MUI Date Pickers**  -  controlled date selection with synchronized form state.
+- **Emotion styling system**  -  CSS-in-JS styling integrated with MUI theming.
 
 Form & Validation
 
