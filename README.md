@@ -14,7 +14,7 @@ Run the following commands:
 ##   Project Description:
 
 Service Logs Management Application built with React 19, TypeScript, Redux Toolkit and MUI.
-The app allows users to create, manage and save service logs with full draft support and autosave function.
+The application allows users to create, manage and save service logs with full draft support and autosave function.
 
 Event Calendar app consists of two parts for easy event management and navigation:
 
@@ -29,7 +29,23 @@ Event Calendar app consists of two parts for easy event management and navigatio
     - List of events of this day.
 By clicking on an event it is possible to edit or delete it.
 
-When an event is added or deleted, the user is instantly informed of the changes at the top of the screen.
+## Core Functionality
+
+- **1. Draft Workflow**:
+
+  - Real-time autosave on every field mutation
+  - Local persistence with state rehydration on boot
+  - Draft state indicators (saving / saved)
+  - Multi-draft management (create, delete, clear all)
+  - Deterministic default date logic (start → end auto-sync)
+
+- **2.Service Logs Data Grid**:
+
+  - Advanced filtering (date range, service type)
+  - Search across key fields
+  - Editable records via dialog
+  - Optimized column configuration via memoization
+  - Snackbar-driven UX feedback
 
 ## Libraries and tools
 
@@ -37,9 +53,9 @@ The project uses the following main libraries and tools:
 
 Core
 
-- **React** (ver. 19.1.1) - basic libraries for creating UI.
-- **Typescript** (ver. 5.9.3"): Provides static typing for JavaScript. It's used to increase the reliability of development and the ability to detect run-time errors.
-- **@reduxjs/toolkit** (ver. 2.9.3): Global state management for drafts and service logs with predictable mutation patterns.
+- **React** - basic libraries for creating UI.
+- **Typescript** - provides static typing for JavaScript. It's used to increase the reliability of development and the ability to detect run-time errors.
+- **Reduxjs/toolkit** - global state management for drafts and service logs with predictable mutation patterns.
 
 UI Layer
 
@@ -50,10 +66,10 @@ UI Layer
 
 Form & Validation
 
-- **React Hook Form** : Controlled form state management.
-- **Yup schema validation** : Schema-based validation layer.
+- **React Hook Form** - controlled form state management.
+- **Yup schema validation** - schema-based validation layer.
 
 Utilities
 
-- **Dayjs** (ver. 1.11.10): Date manipulation and default date synchronization logic.
-- **Notistack** (ver. 3.0.2) : Global feedback and notification handling system.
+- **Dayjs** - date manipulation and default date synchronization logic.
+- **Notistack** - global feedback and notification handling system.
