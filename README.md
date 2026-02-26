@@ -1,73 +1,59 @@
-# React + TypeScript + Vite
+# Service Logs Management App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Requirements
+- Node.js (recommended ver: 22.13.1)
 
-Currently, two official plugins are available:
+To run the application locally, clone the repository, install the dependencies, and run the application.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Run the following commands:
+1. git clone https://github.com/your-username/vektor_tms.git
+2. cd vektor_tms
+3. npm install
+4. npm run dev
 
-## React Compiler
+##   Project Description:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Service Logs Management Application built with React 19, TypeScript, Redux Toolkit and MUI.
+The app allows users to create, manage and save service logs with full draft support and autosave function.
 
-## Expanding the ESLint configuration
+Event Calendar app consists of two parts for easy event management and navigation:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **1. CalendarNavigation:** - easy event management and filtering provides the ability to perform actions such as:
+   - Event creation: The user can easily create a new event by specifying a title, description, date and time of creation.
+   - Filtering events: Navigation elements such as the back and forward buttons allow the user to cycle through the month, making it easy to search for events. A calendar is also provided, revealing a date picker to select a specific year and month.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **2. Calendar** - represents the calendar grid of the month selected in the filter:
+    Consists of days (cells).
+    A cell includes:
+    - The day number of the month 
+    - List of events of this day.
+By clicking on an event it is possible to edit or delete it.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+When an event is added or deleted, the user is instantly informed of the changes at the top of the screen.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Libraries and tools
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+The project uses the following main libraries and tools:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Core
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- **React** (ver. 19.1.1): Basic libraries for creating UI.
+- **Typescript** (ver. 5.9.3"): Provides static typing for JavaScript. It's used to increase the reliability of development and the ability to detect run-time errors.
+- **@reduxjs/toolkit** (ver. 2.9.3): Global state management for drafts and service logs with predictable mutation patterns.
+
+UI Layer
+
+- **MUI 7** : Enterprise-ready component system.
+- **MUI DataGrid** : Enterprise-ready component system.
+- **MUI Date Pickers** : Controlled date selection with synchronized form state.
+- **Emotion styling system** : CSS-in-JS styling integrated with MUI theming.
+
+Form & Validation
+
+- **React Hook Form** : Controlled form state management.
+- **Yup schema validation** : Schema-based validation layer.
+
+Utilities
+
+- **Dayjs** (ver. 1.11.10): Date manipulation and default date synchronization logic.
+- **Notistack** (ver. 3.0.2) : Global feedback and notification handling system.
