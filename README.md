@@ -16,22 +16,9 @@ Run the following commands:
 Service Logs Management Application built with React 19, TypeScript, Redux Toolkit and MUI.
 The application allows users to create, manage and save service logs with full draft support and autosave function.
 
-Event Calendar app consists of two parts for easy event management and navigation:
-
-- **1. CalendarNavigation:** - easy event management and filtering provides the ability to perform actions such as:
-   - Event creation: The user can easily create a new event by specifying a title, description, date and time of creation.
-   - Filtering events: Navigation elements such as the back and forward buttons allow the user to cycle through the month, making it easy to search for events. A calendar is also provided, revealing a date picker to select a specific year and month.
-
-- **2. Calendar** - represents the calendar grid of the month selected in the filter:
-    Consists of days (cells).
-    A cell includes:
-    - The day number of the month 
-    - List of events of this day.
-By clicking on an event it is possible to edit or delete it.
-
 ## Core Functionality
 
-- **1. Draft Workflow**:
+ **1. Draft Workflow**:
 
   - Real-time autosave on every field mutation
   - Local persistence with state rehydration on boot
@@ -39,7 +26,7 @@ By clicking on an event it is possible to edit or delete it.
   - Multi-draft management (create, delete, clear all)
   - Deterministic default date logic (start → end auto-sync)
 
-- **2.Service Logs Data Grid**:
+ **2.Service Logs Data Grid**:
 
   - Advanced filtering (date range, service type)
   - Search across key fields
