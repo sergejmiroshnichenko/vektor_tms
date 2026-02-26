@@ -21,7 +21,7 @@ The application allows users to create, manage and save service logs with full d
  **1. Draft Workflow**:
 
   - Real-time autosave on every field mutation
-  - Local persistence with state rehydration on boot
+  - Local save with state rehydration on reload
   - Draft state indicators (saving / saved)
   - Multi-draft management (create, delete, clear all)
   - Deterministic default date logic (start → end auto-sync)
