@@ -37,7 +37,7 @@ The project uses the following main libraries and tools:
 
 Core
 
-- **React** (ver. 19.1.1): Basic libraries for creating UI.
+- **React** (ver. 19.1.1) - basic libraries for creating UI.
 - **Typescript** (ver. 5.9.3"): Provides static typing for JavaScript. It's used to increase the reliability of development and the ability to detect run-time errors.
 - **@reduxjs/toolkit** (ver. 2.9.3): Global state management for drafts and service logs with predictable mutation patterns.
 
